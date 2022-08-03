@@ -1,0 +1,76 @@
+﻿@page "/"
+@using GridWithContextMenu.Data;
+
+@inject WeatherForecastService ForecastService
+
+<DxGrid @ref="Grid"
+        Data="GridData"
+        EditMode="GridEditMode.EditRow"
+        CssClass="mw-1100 customGrid"
+        CustomizeElement="Grid_CustomizeElement"
+        @oncontextmenu:preventDefault
+        EditModelSaving="Grid_EditModelSaving"
+        DataItemDeleting="Grid_DataItemDeleting">
+    <Columns>
+        <DxGridDataColumn FieldName="Date" SortIndex="0">
+            <CellEditTemplate>
+                @{
+                    var forecast = (WeatherForecast)context.EditModel;
+                }
+                <DxDateEdit @bind-Date="@forecast.Date" />
+            </CellEditTemplate>
+        </DxGridDataColumn>
+        <DxGridDataColumn FieldName="TemperatureC" Caption="Temperature">
+            <CellEditTemplate>
+                @{
+                    var forecast = (WeatherForecast)context.EditModel;
+                }
+                <DxSpinEdit @bind-Value="@forecast.TemperatureC" />
+            </CellEditTemplate>
+        </DxGridDataColumn>
+        <DxGridDataColumn FieldName="Summary">
+            <CellEditTemplate>
+                @{
+                    var forecast = (WeatherForecast)context.EditModel;
+                }
+                <DxComboBox Data="@Summaries" @bind-Value=forecast.Summary />
+            </CellEditTemplate>
+        </DxGridDataColumn>
+    </Columns>
+    <TotalSummary>
+        <DxGridSummaryItem SummaryType="GridSummaryItemType.Avg" FieldName="TemperatureC" />
+    </TotalSummary>
+</DxGrid>
+
+<GridContextMenuContainer Grid="Grid" @ref="ContextMenuContainer" />
+
+@code {
+    IGrid Grid { get; set; }
+    GridContextMenuContainer ContextMenuContainer { get; set; }
+    object GridData { get; set; }
+    string[] Summaries;
+
+    protected override async Task OnInitializedAsync() {
+        GridData = await ForecastService.GetForecastAsync();
+        Summaries = ForecastService.GetSummaries();
+    }
+
+    void Grid_CustomizeElement(GridCustomizeElementEventArgs e) {
+        if(GridContextMenuHelper.IsContextMenuElement(e.ElementType)) {
+            e.Attributes["oncontextmenu"] = EventCallback.Factory.Create<MouseEventArgs>(
+                this,
+                async mArgs => await ContextMenuContainer.Grid_ContextMenu(e, mArgs)
+            );
+        }
+    }
+
+    async Task Grid_EditModelSaving(GridEditModelSavingEventArgs e) {
+        GridData = await ForecastService.ChangeForecastAsync((WeatherForecast)e.EditModel);
+    }
+    async Task Grid_DataItemDeleting(GridDataItemDeletingEventArgs e) {
+        var item = (WeatherForecast)e.DataItem;
+        if (item != null) {
+            await ForecastService.Remove(item);
+        }
+    }
+}
