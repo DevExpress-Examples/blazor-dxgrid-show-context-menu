@@ -1,0 +1,158 @@
+.menu-item-selected {
+    background-color: #d5d8db;
+}
+
+.grid-context-menu-item-full-expand,
+.grid-context-menu-item-full-collapse,
+.grid-context-menu-item-sort-ascending,
+.grid-context-menu-item-sort-descending,
+.grid-context-menu-item-group-by-column,
+.grid-context-menu-item-ungroup-column,
+.grid-context-menu-item-clear-grouping,
+.grid-context-menu-item-show-group-panel,
+.grid-context-menu-item-column-chooser,
+.grid-context-menu-item-clear-filter,
+.grid-context-menu-item-expand-row,
+.grid-context-menu-item-collapse-row,
+.grid-context-menu-item-expand-detail-row,
+.grid-context-menu-item-collapse-detail-row,
+.grid-context-menu-item-new-row,
+.grid-context-menu-item-edit-row,
+.grid-context-menu-item-delete-row {
+    width: 16px;
+    height: 16px;
+    background-repeat: no-repeat;
+    background-color: gray;
+}
+
+.dropdown-item:active .grid-context-menu-item-full-expand,
+.dropdown-item:active .grid-context-menu-item-full-collapse,
+.dropdown-item:active .grid-context-menu-item-sort-ascending,
+.dropdown-item:active .grid-context-menu-item-sort-descending,
+.dropdown-item:active .grid-context-menu-item-group-by-column,
+.dropdown-item:active .grid-context-menu-item-ungroup-column,
+.dropdown-item:active .grid-context-menu-item-clear-grouping,
+.dropdown-item:active .grid-context-menu-item-show-group-panel,
+.dropdown-item:active .grid-context-menu-item-column-chooser,
+.dropdown-item:active .grid-context-menu-item-clear-filter,
+.dropdown-item:active .grid-context-menu-item-expand-row,
+.dropdown-item:active .grid-context-menu-item-collapse-row,
+.dropdown-item:active .grid-context-menu-item-expand-detail-row,
+.dropdown-item:active .grid-context-menu-item-collapse-detail-row,
+.dropdown-item:active .grid-context-menu-item-new-row,
+.dropdown-item:active .grid-context-menu-item-edit-row,
+.dropdown-item:active .grid-context-menu-item-delete-row {
+    background-color: white;
+}
+
+.dropdown-item.disabled .grid-context-menu-item-full-expand,
+.dropdown-item.disabled .grid-context-menu-item-full-collapse,
+.dropdown-item.disabled .grid-context-menu-item-sort-ascending,
+.dropdown-item.disabled .grid-context-menu-item-sort-descending,
+.dropdown-item.disabled .grid-context-menu-item-group-by-column,
+.dropdown-item.disabled .grid-context-menu-item-ungroup-column,
+.dropdown-item.disabled .grid-context-menu-item-clear-grouping,
+.dropdown-item.disabled .grid-context-menu-item-show-group-panel,
+.dropdown-item.disabled .grid-context-menu-item-clear-filter,
+.dropdown-item.disabled .grid-context-menu-item-expand-row,
+.dropdown-item.disabled .grid-context-menu-item-collapse-row,
+.dropdown-item.disabled .grid-context-menu-item-expand-detail-row,
+.dropdown-item.disabled .grid-context-menu-item-collapse-detail-row,
+.dropdown-item.disabled .grid-context-menu-item-new-row,
+.dropdown-item.disabled .grid-context-menu-item-edit-row,
+.dropdown-item.disabled .grid-context-menu-item-delete-row {
+    background-color: #c3c2c2;
+}
+
+.grid-context-menu-item-full-expand {
+    mask-image: url(../images/icons/full-expand.svg);
+    -webkit-mask-image: url(../images/icons/full-expand.svg);
+}
+.grid-context-menu-item-full-collapse {
+    mask-image: url(../images/icons/full-collapse.svg);
+    -webkit-mask-image: url(../images/icons/full-collapse.svg);
+}
+.grid-context-menu-item-sort-ascending {
+    mask-image: url(../images/icons/sort-ascending.svg);
+    -webkit-mask-image: url(../images/icons/sort-ascending.svg);
+}
+.grid-context-menu-item-sort-descending {
+    mask-image: url(../images/icons/sort-descending.svg);
+    -webkit-mask-image: url(../images/icons/sort-descending.svg);
+}
+.grid-context-menu-item-group-by-column {
+    mask-image: url(../images/icons/group-by-column.svg);
+    -webkit-mask-image: url(../images/icons/group-by-column.svg);
+}
+.grid-context-menu-item-ungroup-column {
+    mask-image: url(../images/icons/ungroup-column.svg);
+    -webkit-mask-image: url(../images/icons/ungroup-column.svg);
+}
+.grid-context-menu-item-clear-grouping {
+    mask-image: url(../images/icons/clear-grouping.svg);
+    -webkit-mask-image: url(../images/icons/clear-grouping.svg);
+}
+.grid-context-menu-item-show-group-panel {
+    mask-image: url(../images/icons/show-group-panel.svg);
+    -webkit-mask-image: url(../images/icons/show-group-panel.svg);
+}
+.grid-context-menu-item-column-chooser {
+    mask-image: url(../images/icons/column-chooser.svg);
+    -webkit-mask-image: url(../images/icons/column-chooser.svg);
+}
+.grid-context-menu-item-clear-filter {
+    mask-image: url(../images/icons/clear-filter.svg);
+    -webkit-mask-image: url(../images/icons/clear-filter.svg);
+}
+.grid-context-menu-item-expand-row {
+    mask-image: url(../images/icons/expand-row.svg);
+    -webkit-mask-image: url(../images/icons/expand-row.svg);
+}
+.grid-context-menu-item-collapse-row {
+    mask-image: url(../images/icons/collapse-row.svg);
+    -webkit-mask-image: url(../images/icons/collapse-row.svg);
+}
+.grid-context-menu-item-expand-detail-row {
+    mask-image: url(../images/icons/expand-detail-row.svg);
+    -webkit-mask-image: url(../images/icons/expand-detail-row.svg);
+}
+.grid-context-menu-item-collapse-detail-row {
+    mask-image: url(../images/icons/collapse-detail-row.svg);
+    -webkit-mask-image: url(../images/icons/collapse-detail-row.svg);
+}
+.grid-context-menu-item-new-row {
+    mask-image: url(../images/icons/new-row.svg);
+    -webkit-mask-image: url(../images/icons/new-row.svg);
+}
+.grid-context-menu-item-edit-row {
+    mask-image: url(../images/icons/edit-row.svg);
+    -webkit-mask-image: url(../images/icons/edit-row.svg);
+}
+.grid-context-menu-item-delete-row {
+    mask-image: url(../images/icons/delete-row.svg);
+    -webkit-mask-image: url(../images/icons/delete-row.svg);
+}
+
+
+.grid-context-menu-item-filter-row,
+.grid-context-menu-item-footer {
+    width: 16px;
+    height: 16px;
+    background-repeat: no-repeat;
+}
+
+.menu-item-selected .grid-context-menu-item-filter-row,
+.menu-item-selected .grid-context-menu-item-footer {
+    background-color: gray;
+}
+
+.menu-item-selected.dropdown-item:active .grid-context-menu-item-filter-row,
+.menu-item-selected.dropdown-item:active .grid-context-menu-item-footer {
+    background-color: white;
+}
+
+.menu-item-selected .grid-context-menu-item-filter-row,
+.menu-item-selected .grid-context-menu-item-footer {
+    mask-image: url(../images/icons/item-checked.svg);
+    -webkit-mask-image: url(../images/icons/item-checked.svg);
+}
