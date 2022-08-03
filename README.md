@@ -10,7 +10,7 @@ You can show a Context Menu on a right mouse click on a Grid element. In this ex
 
 Add the **oncontextmenu:preventDefault** to disable the standard browser context menu. In the Grid's [CustomizeElement](https://docs.devexpress.com/Blazor/DevExpress.Blazor.DxGrid.CustomizeElement) event handler, subscribe for the **contextmenu** event that shows the custom Context Menu.
 
-The [GridContextMenuContainer](./CS/Pages/GridContextMenuContainer.razor) component contains Context Menu instances. The [GridContextMenuHelper](./CS/Data/GridContextMenuHelper.cs) class implements Context Menu's items, their state, and click handlers. You can use the [Grid's API](https://docs.devexpress.com/Blazor/DevExpress.Blazor.DxGrid._methods) to apply modifications.
+The [GridContextMenuContainer](./CS/Pages/GridContextMenuContainer.razor) component contains Context Menu components. The [GridContextMenuHelper](./CS/Data/GridContextMenuHelper.cs) class implements Context Menu's item generation, their state, and click handler that use the [Grid's API](https://docs.devexpress.com/Blazor/DevExpress.Blazor.DxGrid._methods) to execute commands.
 
 In this example, the [Column Chooser](https://docs.devexpress.com/Blazor/DevExpress.Blazor.DxGrid.ShowColumnChooser(System.String)) is shown next to the Grid component. To do this, assign a CSS class to the Grid and use it to [arrange](./CS/Data/GridContextMenuHelper.cs#L85) the Column Chooser.
 
