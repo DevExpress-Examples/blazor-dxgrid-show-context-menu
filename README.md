@@ -4,7 +4,7 @@
 
 # Blazor Grid - Show the Context Menu
 
-You can show a Context Menu on a right mouse click on a Grid element. In this example, a click on a column header or row invokes the Context Menu.
+You can show a Context Menu when you right-click a Grid element. In this example, a click on a column header or row invokes the Context Menu.
 
 ![Grid with Context Menu for a column](result.png)
 
