@@ -82,7 +82,7 @@ namespace GridWithContextMenu.Data {
                             .Where(i => !string.IsNullOrWhiteSpace(i))
                             .Select(i => "." + i.Trim())
                     );
-                    var positionTarget = $"{gridCssSelector} .dxbs-grid-header-row";
+                    var positionTarget = $"{gridCssSelector} .dxbl-grid-header-row";
                     grid.ShowColumnChooser(positionTarget);
                     break;
                 case GridContextMenuItemType.ClearFilter:
