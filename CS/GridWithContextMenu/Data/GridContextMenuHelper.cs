@@ -1,12 +1,17 @@
 ﻿using DevExpress.Blazor;
 
-namespace GridWithContextMenu.Data {
-    public class GridContextMenuHelper {
-        public static bool IsContextMenuElement(GridElementType elementType) {
+namespace GridWithContextMenu.Data
+{
+    public class GridContextMenuHelper
+    {
+        public static bool IsContextMenuElement(GridElementType elementType)
+        {
             return IsColumnContextMenuElement(elementType) || IsRowContextMenuElement(elementType);
         }
-        public static bool IsColumnContextMenuElement(GridElementType elementType) {
-            switch(elementType) {
+        public static bool IsColumnContextMenuElement(GridElementType elementType)
+        {
+            switch (elementType)
+            {
                 case GridElementType.HeaderCell:
                 case GridElementType.HeaderCommandCell:
                 case GridElementType.HeaderSelectionCell:
@@ -15,8 +20,10 @@ namespace GridWithContextMenu.Data {
             }
             return false;
         }
-        public static bool IsRowContextMenuElement(GridElementType elementType) {
-            switch(elementType) {
+        public static bool IsRowContextMenuElement(GridElementType elementType)
+        {
+            switch (elementType)
+            {
                 case GridElementType.DataRow:
                 case GridElementType.GroupRow:
                     return true;
@@ -24,10 +31,12 @@ namespace GridWithContextMenu.Data {
             return false;
         }
 
-        public static void ProcessColumnMenuItemClick(ContextMenuItem item, IGridColumn column, IGrid grid) {
+        public static void ProcessColumnMenuItemClick(ContextMenuItem item, IGridColumn column, IGrid grid)
+        {
             var dataColumn = column as IGridDataColumn;
             grid.BeginUpdate();
-            switch(item.ItemType) {
+            switch (item.ItemType)
+            {
                 case GridContextMenuItemType.FullExpand:
                     grid.ExpandAllGroupRows();
                     break;
@@ -35,13 +44,15 @@ namespace GridWithContextMenu.Data {
                     grid.CollapseAllGroupRows();
                     break;
                 case GridContextMenuItemType.SortAscending:
-                    if(dataColumn.SortOrder != GridColumnSortOrder.Ascending) {
+                    if (dataColumn.SortOrder != GridColumnSortOrder.Ascending)
+                    {
                         var newSortIndex = dataColumn.SortIndex > -1 ? dataColumn.SortIndex : grid.GetSortedColumns().Count;
                         grid.SortBy(dataColumn.FieldName, GridColumnSortOrder.Ascending, newSortIndex);
                     }
                     break;
                 case GridContextMenuItemType.SortDescending:
-                    if(dataColumn.SortOrder != GridColumnSortOrder.Descending) {
+                    if (dataColumn.SortOrder != GridColumnSortOrder.Descending)
+                    {
                         var newSortIndex = dataColumn.SortIndex > -1 ? dataColumn.SortIndex : grid.GetSortedColumns().Count;
                         grid.SortBy(dataColumn.FieldName, GridColumnSortOrder.Descending, newSortIndex);
                     }
@@ -73,7 +84,7 @@ namespace GridWithContextMenu.Data {
                     column.Visible = false;
                     break;
                 case GridContextMenuItemType.ShowColumnChooser:
-                    if(string.IsNullOrEmpty(grid.CssClass))
+                    if (string.IsNullOrEmpty(grid.CssClass))
                         throw new Exception("Specify DxGrid.CssClass property.");
                     var gridCssSelector = string.Join(
                         string.Empty,
@@ -91,8 +102,10 @@ namespace GridWithContextMenu.Data {
             }
             grid.EndUpdate();
         }
-        public static async Task ProcessRowMenuItemClickAsync(ContextMenuItem item, int visibleIndex, IGrid grid) {
-            switch(item.ItemType) {
+        public static async Task ProcessRowMenuItemClickAsync(ContextMenuItem item, int visibleIndex, IGrid grid)
+        {
+            switch (item.ItemType)
+            {
                 case GridContextMenuItemType.ExpandRow:
                     grid.ExpandGroupRow(visibleIndex);
                     break;
@@ -114,44 +127,57 @@ namespace GridWithContextMenu.Data {
                 case GridContextMenuItemType.DeleteRow:
                     grid.ShowRowDeleteConfirmation(visibleIndex);
                     break;
+                case GridContextMenuItemType.SaveUpdates:
+                    await grid.SaveChangesAsync();
+                    break;
+                case GridContextMenuItemType.CancelUpdates:
+                    await grid.CancelEditAsync();
+                    break;
             }
         }
 
-        public static List<ContextMenuItem> GetColumnItems(GridCustomizeElementEventArgs e) {
+        public static List<ContextMenuItem> GetColumnItems(GridCustomizeElementEventArgs e)
+        {
             var items = CreateColumnContextMenuItems();
 
             var applyBeginGroupForNextVisibleItem = false;
-            foreach(var item in items) {
+            foreach (var item in items)
+            {
                 item.Visible = IsColumnMenuItemVisible(e, item.ItemType);
-                if(!item.Visible && item.BeginGroup)
+                if (!item.Visible && item.BeginGroup)
                     applyBeginGroupForNextVisibleItem = true;
-                if(item.Visible && applyBeginGroupForNextVisibleItem) {
+                if (item.Visible && applyBeginGroupForNextVisibleItem)
+                {
                     item.BeginGroup = true;
                     applyBeginGroupForNextVisibleItem = false;
                 }
                 item.Enabled = IsColumnMenuItemEnabled(e, item.ItemType);
 
                 var isSelected = IsColumnMenuItemSelected(e, item.ItemType);
-                if(item.Enabled && isSelected)
+                if (item.Enabled && isSelected)
                     item.CssClass = "menu-item-selected";
             }
 
             return items;
         }
-        public static List<ContextMenuItem> GetRowItems(GridCustomizeElementEventArgs e) {
+        public static List<ContextMenuItem> GetRowItems(GridCustomizeElementEventArgs e)
+        {
             var items = CreateRowContextMenuItems();
-            foreach(var item in items) {
+            foreach (var item in items)
+            {
                 item.Visible = IsRowMenuItemVisible(e, item.ItemType);
                 item.Enabled = IsRowMenuItemEnabled(e, item.ItemType);
             }
             return items;
         }
 
-        static bool IsColumnMenuItemVisible(GridCustomizeElementEventArgs e, GridContextMenuItemType itemType) {
+        static bool IsColumnMenuItemVisible(GridCustomizeElementEventArgs e, GridContextMenuItemType itemType)
+        {
             var dataColumn = e.Column as IGridDataColumn;
             var allowSort = GetAllowSort(e.Column, e.Grid);
-            var allowGroup = GetAllowGroup(e.Column, e.Grid);
-            switch(itemType) {
+            var allowGroup = GetAllowGroup(e.Column, e.Grid);            
+            switch (itemType)
+            {
                 case GridContextMenuItemType.FullExpand:
                 case GridContextMenuItemType.FullCollapse:
                     return e.ElementType == GridElementType.GroupPanelHeader;
@@ -176,17 +202,20 @@ namespace GridWithContextMenu.Data {
             }
             return false;
         }
-        static bool IsColumnMenuItemSelected(GridCustomizeElementEventArgs e, GridContextMenuItemType itemType) {
+        static bool IsColumnMenuItemSelected(GridCustomizeElementEventArgs e, GridContextMenuItemType itemType)
+        {
             var dataColumn = e.Column as IGridDataColumn;
             var isSorted = dataColumn != null && dataColumn.SortIndex > -1;
             var isGrouped = dataColumn != null && dataColumn.GroupIndex > -1;
             var sortOrder = GridColumnSortOrder.None;
-            if(isSorted || isGrouped) {
+            if (isSorted || isGrouped)
+            {
                 sortOrder = dataColumn.SortOrder;
-                if(sortOrder == GridColumnSortOrder.None)
+                if (sortOrder == GridColumnSortOrder.None)
                     sortOrder = GridColumnSortOrder.Ascending;
             }
-            switch(itemType) {
+            switch (itemType)
+            {
                 case GridContextMenuItemType.SortAscending:
                     return sortOrder == GridColumnSortOrder.Ascending;
                 case GridContextMenuItemType.SortDescending:
@@ -201,11 +230,13 @@ namespace GridWithContextMenu.Data {
             }
             return false;
         }
-        static bool IsColumnMenuItemEnabled(GridCustomizeElementEventArgs e, GridContextMenuItemType itemType) {
+        static bool IsColumnMenuItemEnabled(GridCustomizeElementEventArgs e, GridContextMenuItemType itemType)
+        {
             var dataColumn = e.Column as IGridDataColumn;
             var allowSort = GetAllowSort(e.Column, e.Grid);
             var allowGroup = GetAllowGroup(e.Column, e.Grid);
-            switch(itemType) {
+            switch (itemType)
+            {
                 case GridContextMenuItemType.FullExpand:
                 case GridContextMenuItemType.FullCollapse:
                 case GridContextMenuItemType.SortAscending:
@@ -228,28 +259,34 @@ namespace GridWithContextMenu.Data {
             return false;
         }
 
-        static bool IsRowMenuItemVisible(GridCustomizeElementEventArgs e, GridContextMenuItemType itemType) {
+        static bool IsRowMenuItemVisible(GridCustomizeElementEventArgs e, GridContextMenuItemType itemType)
+        {
             var isGroupRow = e.Grid.IsGroupRow(e.VisibleIndex);
             var hasDetailButton = !isGroupRow
                         && e.Grid.DetailRowTemplate != null
                         && e.Grid.DetailRowDisplayMode == GridDetailRowDisplayMode.Auto
                         && e.Grid.DetailExpandButtonDisplayMode == GridDetailExpandButtonDisplayMode.Auto;
-            switch(itemType) {
+            switch (itemType)
+            {
                 case GridContextMenuItemType.ExpandRow:
                 case GridContextMenuItemType.CollapseRow:
-                    return isGroupRow;
+                    return isGroupRow && !e.Grid.IsEditing();
                 case GridContextMenuItemType.ExpandDetailRow:
                 case GridContextMenuItemType.CollapseDetailRow:
-                    return hasDetailButton;
+                    return hasDetailButton && !e.Grid.IsEditing();
                 case GridContextMenuItemType.NewRow:
-                    return true;
+                    return !e.Grid.IsEditing();
                 case GridContextMenuItemType.EditRow:
                 case GridContextMenuItemType.DeleteRow:
-                    return !isGroupRow;
+                    return !isGroupRow && !e.Grid.IsEditing();
+                case GridContextMenuItemType.SaveUpdates:
+                case GridContextMenuItemType.CancelUpdates:
+                    return e.Grid.IsEditing();
             }
             return false;
         }
-        static bool IsRowMenuItemEnabled(GridCustomizeElementEventArgs e, GridContextMenuItemType itemType) {
+        static bool IsRowMenuItemEnabled(GridCustomizeElementEventArgs e, GridContextMenuItemType itemType)
+        {
             var isGroupRow = e.Grid.IsGroupRow(e.VisibleIndex);
             var isGroupRowExpanded = e.Grid.IsGroupRowExpanded(e.VisibleIndex);
             var hasDetailButton = !isGroupRow
@@ -258,35 +295,42 @@ namespace GridWithContextMenu.Data {
                         && e.Grid.DetailExpandButtonDisplayMode == GridDetailExpandButtonDisplayMode.Auto;
             var isDetailRowExpanded = e.Grid.IsDetailRowExpanded(e.VisibleIndex);
 
-            switch(itemType) {
+            switch (itemType)
+            {
                 case GridContextMenuItemType.ExpandRow:
-                    return isGroupRow && !isGroupRowExpanded;
+                    return isGroupRow && !isGroupRowExpanded && !e.Grid.IsEditing();
                 case GridContextMenuItemType.CollapseRow:
-                    return isGroupRow && isGroupRowExpanded;
+                    return isGroupRow && isGroupRowExpanded && !e.Grid.IsEditing();
                 case GridContextMenuItemType.ExpandDetailRow:
-                    return hasDetailButton && !isDetailRowExpanded;
+                    return hasDetailButton && !isDetailRowExpanded && !e.Grid.IsEditing();
                 case GridContextMenuItemType.CollapseDetailRow:
-                    return hasDetailButton && isDetailRowExpanded;
+                    return hasDetailButton && isDetailRowExpanded && !e.Grid.IsEditing();
                 case GridContextMenuItemType.NewRow:
                 case GridContextMenuItemType.EditRow:
                 case GridContextMenuItemType.DeleteRow:
-                    return true;
+                    return !e.Grid.IsEditing();
+                case GridContextMenuItemType.SaveUpdates:
+                case GridContextMenuItemType.CancelUpdates:
+                    return e.Grid.IsEditing();
             }
             return false;
         }
 
-        static bool GetAllowSort(IGridColumn column, IGrid grid) {
-            if(column is IGridDataColumn dataColumn)
+        static bool GetAllowSort(IGridColumn column, IGrid grid)
+        {
+            if (column is IGridDataColumn dataColumn)
                 return dataColumn.AllowSort ?? grid.AllowSort;
             return false;
         }
-        static bool GetAllowGroup(IGridColumn column, IGrid grid) {
-            if(column is IGridDataColumn dataColumn)
+        static bool GetAllowGroup(IGridColumn column, IGrid grid)
+        {
+            if (column is IGridDataColumn dataColumn)
                 return dataColumn.AllowGroup ?? grid.AllowGroup;
             return false;
         }
 
-        static List<ContextMenuItem> CreateColumnContextMenuItems() {
+        static List<ContextMenuItem> CreateColumnContextMenuItems()
+        {
             return new List<ContextMenuItem> {
                 new ContextMenuItem { ItemType = GridContextMenuItemType.FullExpand, Text = "Expand All", IconCssClass="grid-context-menu-item-full-expand" },
                 new ContextMenuItem { ItemType = GridContextMenuItemType.FullCollapse, Text = "Collapse All", IconCssClass="grid-context-menu-item-full-collapse" },
@@ -304,7 +348,8 @@ namespace GridWithContextMenu.Data {
                 new ContextMenuItem { ItemType = GridContextMenuItemType.ShowFooter, Text = "Footer", IconCssClass="grid-context-menu-item-footer" }
             };
         }
-        static List<ContextMenuItem> CreateRowContextMenuItems() {
+        static List<ContextMenuItem> CreateRowContextMenuItems()
+        {
             return new List<ContextMenuItem> {
                 new ContextMenuItem { ItemType = GridContextMenuItemType.ExpandRow, Text = "Expand", IconCssClass="grid-context-menu-item-expand-row" },
                 new ContextMenuItem { ItemType = GridContextMenuItemType.CollapseRow, Text = "Collapse", IconCssClass="grid-context-menu-item-collapse-row" },
@@ -312,12 +357,15 @@ namespace GridWithContextMenu.Data {
                 new ContextMenuItem { ItemType = GridContextMenuItemType.CollapseDetailRow, Text = "Collapse Detail", IconCssClass="grid-context-menu-item-collapse-detail-row" },
                 new ContextMenuItem { ItemType = GridContextMenuItemType.NewRow, Text = "New", BeginGroup = true, IconCssClass="grid-context-menu-item-new-row" },
                 new ContextMenuItem { ItemType = GridContextMenuItemType.EditRow, Text = "Edit", IconCssClass="grid-context-menu-item-edit-row" },
-                new ContextMenuItem { ItemType = GridContextMenuItemType.DeleteRow, Text = "Delete", IconCssClass="grid-context-menu-item-delete-row" }
+                new ContextMenuItem { ItemType = GridContextMenuItemType.DeleteRow, Text = "Delete", IconCssClass="grid-context-menu-item-delete-row" },
+                new ContextMenuItem { ItemType = GridContextMenuItemType.SaveUpdates, Text = "Save", IconCssClass="grid-context-menu-item-edit-row" },
+                new ContextMenuItem { ItemType = GridContextMenuItemType.CancelUpdates, Text = "Cancel", IconCssClass="grid-context-menu-item-delete-row" }
             };
         }
     }
 
-    public class ContextMenuItem {
+    public class ContextMenuItem
+    {
         public GridContextMenuItemType ItemType { get; set; }
         public string Text { get; set; }
         public bool Enabled { get; set; }
@@ -327,7 +375,8 @@ namespace GridWithContextMenu.Data {
         public string IconCssClass { get; set; }
     }
 
-    public enum GridContextMenuItemType {
+    public enum GridContextMenuItemType
+    {
         FullExpand, FullCollapse,
         SortAscending, SortDescending, ClearSorting,
         GroupByColumn, UngroupColumn, ClearGrouping, ShowGroupPanel,
@@ -337,6 +386,8 @@ namespace GridWithContextMenu.Data {
 
         ExpandRow, CollapseRow,
         ExpandDetailRow, CollapseDetailRow,
-        NewRow, EditRow, DeleteRow
+        NewRow, EditRow, DeleteRow,
+
+        SaveUpdates, CancelUpdates
     }
 }

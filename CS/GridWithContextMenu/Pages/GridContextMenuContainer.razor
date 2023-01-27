@@ -40,23 +40,28 @@
     [Parameter]
     public IGrid Grid { get; set; }
 
-    public async Task Grid_ContextMenu(GridCustomizeElementEventArgs e, MouseEventArgs mouseArgs) {
-        if(GridContextMenuHelper.IsColumnContextMenuElement(e.ElementType)) {
+    public async Task Grid_ContextMenu(GridCustomizeElementEventArgs e, MouseEventArgs mouseArgs)
+    {
+        if (GridContextMenuHelper.IsColumnContextMenuElement(e.ElementType))
+        {
             ContextMenuColumn = e.Column;
             ColumnContextMenuData = GridContextMenuHelper.GetColumnItems(e);
             await ColumnContextMenu.ShowAsync(mouseArgs);
         }
-        if(GridContextMenuHelper.IsRowContextMenuElement(e.ElementType)) {
+        if (GridContextMenuHelper.IsRowContextMenuElement(e.ElementType))
+        {
             ContextMenuRowIndex = e.VisibleIndex;
             RowContextMenuData = GridContextMenuHelper.GetRowItems(e);
             await RowContextMenu.ShowAsync(mouseArgs);
         }
     }
 
-    void ColumnContextMenu_ItemClick(ContextMenuItemClickEventArgs e) {
+    void ColumnContextMenu_ItemClick(ContextMenuItemClickEventArgs e)
+    {
         GridContextMenuHelper.ProcessColumnMenuItemClick((ContextMenuItem)e.ItemInfo.DataItem, ContextMenuColumn, Grid);
     }
-    async Task RowContextMenu_ItemClick(ContextMenuItemClickEventArgs e) {
+    async Task RowContextMenu_ItemClick(ContextMenuItemClickEventArgs e)
+    {
         await GridContextMenuHelper.ProcessRowMenuItemClickAsync((ContextMenuItem)e.ItemInfo.DataItem, ContextMenuRowIndex, Grid);
     }
 }
