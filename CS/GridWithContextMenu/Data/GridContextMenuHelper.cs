@@ -2,8 +2,69 @@
 
 namespace GridWithContextMenu.Data
 {
+    public enum GridContextMenuItemType
+    {
+        FullExpand, FullCollapse,
+        SortAscending, SortDescending, ClearSorting,
+        GroupByColumn, UngroupColumn, ClearGrouping, ShowGroupPanel,
+        HideColumn, ShowColumnChooser,
+        ClearFilter,
+        ShowFilterRow, ShowFooter,
+
+        ExpandRow, CollapseRow,
+        ExpandDetailRow, CollapseDetailRow,
+        NewRow, EditRow, DeleteRow,
+
+        SaveUpdates, CancelUpdates
+    }
+
+    public class ContextMenuItem
+    {
+        public GridContextMenuItemType ItemType { get; set; }
+        public string Text { get; set; }
+        public bool Enabled { get; set; }
+        public bool Visible { get; set; }
+        public bool BeginGroup { get; set; }
+        public string CssClass { get; set; }
+        public string IconCssClass { get; set; }
+    }
+
     public class GridContextMenuHelper
     {
+        static List<ContextMenuItem> CreateColumnContextMenuItems()
+        {
+            return new List<ContextMenuItem> {
+                new ContextMenuItem { ItemType = GridContextMenuItemType.FullExpand, Text = "Expand All", IconCssClass="grid-context-menu-item-full-expand" },
+                new ContextMenuItem { ItemType = GridContextMenuItemType.FullCollapse, Text = "Collapse All", IconCssClass="grid-context-menu-item-full-collapse" },
+                new ContextMenuItem { ItemType = GridContextMenuItemType.SortAscending, Text = "Sort Ascending", BeginGroup = true, IconCssClass="grid-context-menu-item-sort-ascending" },
+                new ContextMenuItem { ItemType = GridContextMenuItemType.SortDescending, Text = "Sort Descending", IconCssClass="grid-context-menu-item-sort-descending" },
+                new ContextMenuItem { ItemType = GridContextMenuItemType.ClearSorting, Text = "Clear Sorting" },
+                new ContextMenuItem { ItemType = GridContextMenuItemType.GroupByColumn, Text = "Group By This Column", BeginGroup = true, IconCssClass="grid-context-menu-item-group-by-column" },
+                new ContextMenuItem { ItemType = GridContextMenuItemType.UngroupColumn, Text = "Ungroup", IconCssClass="grid-context-menu-item-ungroup-column" },
+                new ContextMenuItem { ItemType = GridContextMenuItemType.ClearGrouping, Text = "Clear Grouping", IconCssClass="grid-context-menu-item-clear-grouping" },
+                new ContextMenuItem { ItemType = GridContextMenuItemType.ShowGroupPanel, Text = "Group Panel", IconCssClass="grid-context-menu-item-show-group-panel" },
+                new ContextMenuItem { ItemType = GridContextMenuItemType.HideColumn, Text = "Hide Column", BeginGroup = true },
+                new ContextMenuItem { ItemType = GridContextMenuItemType.ShowColumnChooser, Text = "Column Chooser", IconCssClass="grid-context-menu-item-column-chooser" },
+                new ContextMenuItem { ItemType = GridContextMenuItemType.ClearFilter, Text = "Clear Filter", BeginGroup = true, IconCssClass="grid-context-menu-item-clear-filter" },
+                new ContextMenuItem { ItemType = GridContextMenuItemType.ShowFilterRow, Text = "Filter Row", IconCssClass="grid-context-menu-item-filter-row" },
+                new ContextMenuItem { ItemType = GridContextMenuItemType.ShowFooter, Text = "Footer", IconCssClass="grid-context-menu-item-footer" }
+            };
+        }
+        static List<ContextMenuItem> CreateRowContextMenuItems()
+        {
+            return new List<ContextMenuItem> {
+                new ContextMenuItem { ItemType = GridContextMenuItemType.ExpandRow, Text = "Expand", IconCssClass="grid-context-menu-item-expand-row" },
+                new ContextMenuItem { ItemType = GridContextMenuItemType.CollapseRow, Text = "Collapse", IconCssClass="grid-context-menu-item-collapse-row" },
+                new ContextMenuItem { ItemType = GridContextMenuItemType.ExpandDetailRow, Text = "Expand Detail", BeginGroup = true, IconCssClass="grid-context-menu-item-expand-detail-row" },
+                new ContextMenuItem { ItemType = GridContextMenuItemType.CollapseDetailRow, Text = "Collapse Detail", IconCssClass="grid-context-menu-item-collapse-detail-row" },
+                new ContextMenuItem { ItemType = GridContextMenuItemType.NewRow, Text = "New", BeginGroup = true, IconCssClass="grid-context-menu-item-new-row" },
+                new ContextMenuItem { ItemType = GridContextMenuItemType.EditRow, Text = "Edit", IconCssClass="grid-context-menu-item-edit-row" },
+                new ContextMenuItem { ItemType = GridContextMenuItemType.DeleteRow, Text = "Delete", IconCssClass="grid-context-menu-item-delete-row" },
+                new ContextMenuItem { ItemType = GridContextMenuItemType.SaveUpdates, Text = "Save", IconCssClass="grid-context-menu-item-edit-row" },
+                new ContextMenuItem { ItemType = GridContextMenuItemType.CancelUpdates, Text = "Cancel", IconCssClass="grid-context-menu-item-delete-row" }
+            };
+        }
+
         public static bool IsContextMenuElement(GridElementType elementType)
         {
             return IsColumnContextMenuElement(elementType) || IsRowContextMenuElement(elementType);
@@ -26,6 +87,7 @@ namespace GridWithContextMenu.Data
             {
                 case GridElementType.DataRow:
                 case GridElementType.GroupRow:
+                case GridElementType.EditRow:
                     return true;
             }
             return false;
@@ -328,66 +390,6 @@ namespace GridWithContextMenu.Data
                 return dataColumn.AllowGroup ?? grid.AllowGroup;
             return false;
         }
-
-        static List<ContextMenuItem> CreateColumnContextMenuItems()
-        {
-            return new List<ContextMenuItem> {
-                new ContextMenuItem { ItemType = GridContextMenuItemType.FullExpand, Text = "Expand All", IconCssClass="grid-context-menu-item-full-expand" },
-                new ContextMenuItem { ItemType = GridContextMenuItemType.FullCollapse, Text = "Collapse All", IconCssClass="grid-context-menu-item-full-collapse" },
-                new ContextMenuItem { ItemType = GridContextMenuItemType.SortAscending, Text = "Sort Ascending", BeginGroup = true, IconCssClass="grid-context-menu-item-sort-ascending" },
-                new ContextMenuItem { ItemType = GridContextMenuItemType.SortDescending, Text = "Sort Descending", IconCssClass="grid-context-menu-item-sort-descending" },
-                new ContextMenuItem { ItemType = GridContextMenuItemType.ClearSorting, Text = "Clear Sorting" },
-                new ContextMenuItem { ItemType = GridContextMenuItemType.GroupByColumn, Text = "Group By This Column", BeginGroup = true, IconCssClass="grid-context-menu-item-group-by-column" },
-                new ContextMenuItem { ItemType = GridContextMenuItemType.UngroupColumn, Text = "Ungroup", IconCssClass="grid-context-menu-item-ungroup-column" },
-                new ContextMenuItem { ItemType = GridContextMenuItemType.ClearGrouping, Text = "Clear Grouping", IconCssClass="grid-context-menu-item-clear-grouping" },
-                new ContextMenuItem { ItemType = GridContextMenuItemType.ShowGroupPanel, Text = "Group Panel", IconCssClass="grid-context-menu-item-show-group-panel" },
-                new ContextMenuItem { ItemType = GridContextMenuItemType.HideColumn, Text = "Hide Column", BeginGroup = true },
-                new ContextMenuItem { ItemType = GridContextMenuItemType.ShowColumnChooser, Text = "Column Chooser", IconCssClass="grid-context-menu-item-column-chooser" },
-                new ContextMenuItem { ItemType = GridContextMenuItemType.ClearFilter, Text = "Clear Filter", BeginGroup = true, IconCssClass="grid-context-menu-item-clear-filter" },
-                new ContextMenuItem { ItemType = GridContextMenuItemType.ShowFilterRow, Text = "Filter Row", IconCssClass="grid-context-menu-item-filter-row" },
-                new ContextMenuItem { ItemType = GridContextMenuItemType.ShowFooter, Text = "Footer", IconCssClass="grid-context-menu-item-footer" }
-            };
-        }
-        static List<ContextMenuItem> CreateRowContextMenuItems()
-        {
-            return new List<ContextMenuItem> {
-                new ContextMenuItem { ItemType = GridContextMenuItemType.ExpandRow, Text = "Expand", IconCssClass="grid-context-menu-item-expand-row" },
-                new ContextMenuItem { ItemType = GridContextMenuItemType.CollapseRow, Text = "Collapse", IconCssClass="grid-context-menu-item-collapse-row" },
-                new ContextMenuItem { ItemType = GridContextMenuItemType.ExpandDetailRow, Text = "Expand Detail", BeginGroup = true, IconCssClass="grid-context-menu-item-expand-detail-row" },
-                new ContextMenuItem { ItemType = GridContextMenuItemType.CollapseDetailRow, Text = "Collapse Detail", IconCssClass="grid-context-menu-item-collapse-detail-row" },
-                new ContextMenuItem { ItemType = GridContextMenuItemType.NewRow, Text = "New", BeginGroup = true, IconCssClass="grid-context-menu-item-new-row" },
-                new ContextMenuItem { ItemType = GridContextMenuItemType.EditRow, Text = "Edit", IconCssClass="grid-context-menu-item-edit-row" },
-                new ContextMenuItem { ItemType = GridContextMenuItemType.DeleteRow, Text = "Delete", IconCssClass="grid-context-menu-item-delete-row" },
-                new ContextMenuItem { ItemType = GridContextMenuItemType.SaveUpdates, Text = "Save", IconCssClass="grid-context-menu-item-edit-row" },
-                new ContextMenuItem { ItemType = GridContextMenuItemType.CancelUpdates, Text = "Cancel", IconCssClass="grid-context-menu-item-delete-row" }
-            };
-        }
     }
 
-    public class ContextMenuItem
-    {
-        public GridContextMenuItemType ItemType { get; set; }
-        public string Text { get; set; }
-        public bool Enabled { get; set; }
-        public bool Visible { get; set; }
-        public bool BeginGroup { get; set; }
-        public string CssClass { get; set; }
-        public string IconCssClass { get; set; }
-    }
-
-    public enum GridContextMenuItemType
-    {
-        FullExpand, FullCollapse,
-        SortAscending, SortDescending, ClearSorting,
-        GroupByColumn, UngroupColumn, ClearGrouping, ShowGroupPanel,
-        HideColumn, ShowColumnChooser,
-        ClearFilter,
-        ShowFilterRow, ShowFooter,
-
-        ExpandRow, CollapseRow,
-        ExpandDetailRow, CollapseDetailRow,
-        NewRow, EditRow, DeleteRow,
-
-        SaveUpdates, CancelUpdates
-    }
 }

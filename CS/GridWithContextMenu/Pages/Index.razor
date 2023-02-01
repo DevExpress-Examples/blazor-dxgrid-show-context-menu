@@ -55,21 +55,26 @@
         Summaries = ForecastService.GetSummaries();
     }
 
-    void Grid_CustomizeElement(GridCustomizeElementEventArgs e) {
+    void Grid_CustomizeElement(GridCustomizeElementEventArgs e)
+    {
         if(GridContextMenuHelper.IsContextMenuElement(e.ElementType)) {
-            e.Attributes["oncontextmenu"] = EventCallback.Factory.Create<MouseEventArgs>(
-                this,
-                async mArgs => await ContextMenuContainer.Grid_ContextMenu(e, mArgs)
-            );
+        	e.Attributes["oncontextmenu"] = EventCallback.Factory.Create<MouseEventArgs>(
+         		this,
+        		async mArgs => await ContextMenuContainer.Grid_ContextMenu(e, mArgs)
+        	);
         }
+          
     }
 
-    async Task Grid_EditModelSaving(GridEditModelSavingEventArgs e) {
+    async Task Grid_EditModelSaving(GridEditModelSavingEventArgs e)
+    {
         GridData = await ForecastService.ChangeForecastAsync((WeatherForecast)e.EditModel);
     }
-    async Task Grid_DataItemDeleting(GridDataItemDeletingEventArgs e) {
+    async Task Grid_DataItemDeleting(GridDataItemDeletingEventArgs e)
+    {
         var item = (WeatherForecast)e.DataItem;
-        if (item != null) {
+        if (item != null)
+        {
             await ForecastService.Remove(item);
         }
     }
