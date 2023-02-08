@@ -4,31 +4,28 @@
 <DxContextMenu @ref="ColumnContextMenu"
                Data="ColumnContextMenuData"
                ItemClick="ColumnContextMenu_ItemClick">
-	<DataMappings>	
-          <DxContextMenuDataMapping Text="@nameof(ContextMenuItem.Text)"
-                                   Visible="@nameof(ContextMenuItem.Visible)"
-                                   Enabled="@nameof(ContextMenuItem.Enabled)"
-                                   BeginGroup="@nameof(ContextMenuItem.BeginGroup)"
-                                   CssClass="@nameof(ContextMenuItem.CssClass)"
-                                   IconCssClass="@nameof(ContextMenuItem.IconCssClass)" />
+    <DataMappings>	
+        <DxContextMenuDataMapping Text="@nameof(ContextMenuItem.Text)"
+                                  Visible="@nameof(ContextMenuItem.Visible)"
+                                  Enabled="@nameof(ContextMenuItem.Enabled)"
+                                  BeginGroup="@nameof(ContextMenuItem.BeginGroup)"
+                                  CssClass="@nameof(ContextMenuItem.CssClass)"
+                                  IconCssClass="@nameof(ContextMenuItem.IconCssClass)" />
  	</DataMappings>
- 
 </DxContextMenu>
 
 <DxContextMenu @ref="RowContextMenu"
                Data="RowContextMenuData"
                ItemClick="RowContextMenu_ItemClick">
-	<DataMappings>	
-          <DxContextMenuDataMapping Text="@nameof(ContextMenuItem.Text)"
-                                   Visible="@nameof(ContextMenuItem.Visible)"
-                                   Enabled="@nameof(ContextMenuItem.Enabled)"
-                                   BeginGroup="@nameof(ContextMenuItem.BeginGroup)"
-                                   CssClass="@nameof(ContextMenuItem.CssClass)"
-                                   IconCssClass="@nameof(ContextMenuItem.IconCssClass)" />
+    <DataMappings>	
+        <DxContextMenuDataMapping Text="@nameof(ContextMenuItem.Text)"
+                                  Visible="@nameof(ContextMenuItem.Visible)"
+                                  Enabled="@nameof(ContextMenuItem.Enabled)"
+                                  BeginGroup="@nameof(ContextMenuItem.BeginGroup)"
+                                  CssClass="@nameof(ContextMenuItem.CssClass)"
+                                  IconCssClass="@nameof(ContextMenuItem.IconCssClass)" />
  	</DataMappings>
- 
 </DxContextMenu>
-
 
 @code {
     DxContextMenu ColumnContextMenu { get; set; }
@@ -50,20 +47,17 @@
     
     public async Task Grid_ContextMenu(GridCustomizeElementEventArgs e, MouseEventArgs mouseArgs)
     {
-    	if (GridContextMenuHelper.IsColumnContextMenuElement(e.ElementType))
+    	if(GridContextMenuHelper.IsColumnContextMenuElement(e.ElementType))
     	{
     		ContextMenuColumn = e.Column;
     		ColumnContextMenuData = GridContextMenuHelper.GetColumnItems(e);
     		await ColumnContextMenu.ShowAsync(mouseArgs);
     	}
-    	if (GridContextMenuHelper.IsRowContextMenuElement(e.ElementType))
+    	if(GridContextMenuHelper.IsRowContextMenuElement(e.ElementType))
     	{
     		ContextMenuRowIndex = e.VisibleIndex;
     		RowContextMenuData = GridContextMenuHelper.GetRowItems(e);
     		await RowContextMenu.ShowAsync(mouseArgs);
     	}
     }
-    
-    
-    
 }
