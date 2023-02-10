@@ -47,15 +47,15 @@ namespace GridWithContextMenu.Data {
         }
         static List<ContextMenuItem> CreateRowContextMenuItems() {
             return new List<ContextMenuItem> {
+                new ContextMenuItem { ItemType = GridContextMenuItemType.SaveUpdates, Text = "Save", IconCssClass="grid-context-menu-item-edit-row" },
+                new ContextMenuItem { ItemType = GridContextMenuItemType.CancelUpdates, Text = "Cancel", IconCssClass="grid-context-menu-item-delete-row" },
                 new ContextMenuItem { ItemType = GridContextMenuItemType.ExpandRow, Text = "Expand", IconCssClass="grid-context-menu-item-expand-row" },
                 new ContextMenuItem { ItemType = GridContextMenuItemType.CollapseRow, Text = "Collapse", IconCssClass="grid-context-menu-item-collapse-row" },
                 new ContextMenuItem { ItemType = GridContextMenuItemType.ExpandDetailRow, Text = "Expand Detail", BeginGroup = true, IconCssClass="grid-context-menu-item-expand-detail-row" },
                 new ContextMenuItem { ItemType = GridContextMenuItemType.CollapseDetailRow, Text = "Collapse Detail", IconCssClass="grid-context-menu-item-collapse-detail-row" },
                 new ContextMenuItem { ItemType = GridContextMenuItemType.NewRow, Text = "New", BeginGroup = true, IconCssClass="grid-context-menu-item-new-row" },
                 new ContextMenuItem { ItemType = GridContextMenuItemType.EditRow, Text = "Edit", IconCssClass="grid-context-menu-item-edit-row" },
-                new ContextMenuItem { ItemType = GridContextMenuItemType.DeleteRow, Text = "Delete", IconCssClass="grid-context-menu-item-delete-row" },
-                new ContextMenuItem { ItemType = GridContextMenuItemType.SaveUpdates, Text = "Save", IconCssClass="grid-context-menu-item-edit-row" },
-                new ContextMenuItem { ItemType = GridContextMenuItemType.CancelUpdates, Text = "Cancel", IconCssClass="grid-context-menu-item-delete-row" }
+                new ContextMenuItem { ItemType = GridContextMenuItemType.DeleteRow, Text = "Delete", IconCssClass="grid-context-menu-item-delete-row" }
             };
         }
 
@@ -297,15 +297,15 @@ namespace GridWithContextMenu.Data {
             switch(itemType) {
                 case GridContextMenuItemType.ExpandRow:
                 case GridContextMenuItemType.CollapseRow:
-                    return isGroupRow && !e.Grid.IsEditing();
+                    return isGroupRow;
                 case GridContextMenuItemType.ExpandDetailRow:
                 case GridContextMenuItemType.CollapseDetailRow:
-                    return hasDetailButton && !e.Grid.IsEditing();
+                    return hasDetailButton;
                 case GridContextMenuItemType.NewRow:
-                    return !e.Grid.IsEditing();
+                    return true;
                 case GridContextMenuItemType.EditRow:
                 case GridContextMenuItemType.DeleteRow:
-                    return !isGroupRow && !e.Grid.IsEditing();
+                    return !isGroupRow;
                 case GridContextMenuItemType.SaveUpdates:
                 case GridContextMenuItemType.CancelUpdates:
                     return e.Grid.IsEditing();
@@ -322,13 +322,13 @@ namespace GridWithContextMenu.Data {
             var isDetailRowExpanded = e.Grid.IsDetailRowExpanded(e.VisibleIndex);
             switch(itemType) {
                 case GridContextMenuItemType.ExpandRow:
-                    return isGroupRow && !isGroupRowExpanded && !e.Grid.IsEditing();
+                    return isGroupRow && !isGroupRowExpanded;
                 case GridContextMenuItemType.CollapseRow:
-                    return isGroupRow && isGroupRowExpanded && !e.Grid.IsEditing();
+                    return isGroupRow && isGroupRowExpanded;
                 case GridContextMenuItemType.ExpandDetailRow:
-                    return hasDetailButton && !isDetailRowExpanded && !e.Grid.IsEditing();
+                    return hasDetailButton && !isDetailRowExpanded;
                 case GridContextMenuItemType.CollapseDetailRow:
-                    return hasDetailButton && isDetailRowExpanded && !e.Grid.IsEditing();
+                    return hasDetailButton && isDetailRowExpanded;
                 case GridContextMenuItemType.NewRow:
                 case GridContextMenuItemType.EditRow:
                 case GridContextMenuItemType.DeleteRow:
