@@ -27,6 +27,10 @@ In this example, the [Column Chooser](https://docs.devexpress.com/Blazor/DevExpr
 - [DxContextMenu](https://docs.devexpress.com/Blazor/DevExpress.Blazor.DxContextMenu)
 - [DxGrid](https://docs.devexpress.com/Blazor/DevExpress.Blazor.DxGrid)
 
+## Video
+
+- [Adding a Context Menu to a Grid](https://www.youtube.com/watch?v=TfBR77ARnf8&t)
+
 ## More Examples
 
 - [Blazor Data Grid - How to edit/delete the selected row by clicking on external buttons](https://github.com/DevExpress-Examples/blazor-DxDataGrid-edit-selected-row-by-clicking-on-external-button)
