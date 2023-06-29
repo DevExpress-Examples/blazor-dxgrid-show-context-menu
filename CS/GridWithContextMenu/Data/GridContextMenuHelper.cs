@@ -13,6 +13,8 @@ namespace GridWithContextMenu.Data {
         ExpandDetailRow, CollapseDetailRow,
         NewRow, EditRow, DeleteRow,
 
+        FixToRight, FixToLeft, Unfix,
+
         SaveUpdates, CancelUpdates
     }
 
@@ -40,6 +42,9 @@ namespace GridWithContextMenu.Data {
                 new ContextMenuItem { ItemType = GridContextMenuItemType.ShowGroupPanel, Text = "Group Panel", IconCssClass="grid-context-menu-item-show-group-panel" },
                 new ContextMenuItem { ItemType = GridContextMenuItemType.HideColumn, Text = "Hide Column", BeginGroup = true },
                 new ContextMenuItem { ItemType = GridContextMenuItemType.ShowColumnChooser, Text = "Column Chooser", IconCssClass="grid-context-menu-item-column-chooser" },
+                new ContextMenuItem { ItemType = GridContextMenuItemType.FixToLeft, Text = "Fix Column to the Left", BeginGroup = true },
+                new ContextMenuItem { ItemType = GridContextMenuItemType.FixToRight, Text = "Fix Column to the Right" },
+                new ContextMenuItem { ItemType = GridContextMenuItemType.Unfix, Text = "Unfix Column" },
                 new ContextMenuItem { ItemType = GridContextMenuItemType.ClearFilter, Text = "Clear Filter", BeginGroup = true, IconCssClass="grid-context-menu-item-clear-filter" },
                 new ContextMenuItem { ItemType = GridContextMenuItemType.ShowFilterRow, Text = "Filter Row", IconCssClass="grid-context-menu-item-filter-row" },
                 new ContextMenuItem { ItemType = GridContextMenuItemType.ShowFooter, Text = "Footer", IconCssClass="grid-context-menu-item-footer" }
@@ -130,18 +135,17 @@ namespace GridWithContextMenu.Data {
                 case GridContextMenuItemType.HideColumn:
                     column.Visible = false;
                     break;
+                case GridContextMenuItemType.FixToLeft:
+                    column.FixedPosition = GridColumnFixedPosition.Left;
+                    break;
+                case GridContextMenuItemType.FixToRight:
+                    column.FixedPosition = GridColumnFixedPosition.Right;
+                    break;
+                case GridContextMenuItemType.Unfix:
+                    column.FixedPosition = GridColumnFixedPosition.None;
+                    break;
                 case GridContextMenuItemType.ShowColumnChooser:
-                    if(string.IsNullOrEmpty(grid.CssClass))
-                        throw new Exception("Specify DxGrid.CssClass property.");
-                    var gridCssSelector = string.Join(
-                        string.Empty,
-                        grid.CssClass
-                            .Split(" ")
-                            .Where(i => !string.IsNullOrWhiteSpace(i))
-                            .Select(i => "." + i.Trim())
-                    );
-                    var positionTarget = $"{gridCssSelector} .dxbl-grid-header-row";
-                    grid.ShowColumnChooser(positionTarget);
+                    grid.ShowColumnChooser();
                     break;
                 case GridContextMenuItemType.ClearFilter:
                     grid.ClearFilter();
@@ -226,6 +230,9 @@ namespace GridWithContextMenu.Data {
                     return allowGroup && dataColumn.GroupIndex > -1;
                 case GridContextMenuItemType.ClearGrouping:
                     return e.Grid.AllowGroup;
+                case GridContextMenuItemType.FixToLeft:
+                case GridContextMenuItemType.FixToRight:
+                case GridContextMenuItemType.Unfix:
                 case GridContextMenuItemType.ShowGroupPanel:
                 case GridContextMenuItemType.ShowFilterRow:
                 case GridContextMenuItemType.ShowFooter:
@@ -284,6 +291,12 @@ namespace GridWithContextMenu.Data {
                     return e.Grid.AllowGroup && e.Grid.GetGroupCount() > 1;
                 case GridContextMenuItemType.ClearFilter:
                     return e.Grid.GetDataColumns().Any(i => i.FilterRowValue != null);
+                case GridContextMenuItemType.FixToLeft:
+                    return e.Column.FixedPosition != GridColumnFixedPosition.Left;
+                case GridContextMenuItemType.FixToRight:
+                    return e.Column.FixedPosition != GridColumnFixedPosition.Right;
+                case GridContextMenuItemType.Unfix:
+                    return e.Column.FixedPosition != GridColumnFixedPosition.None;
             }
             return false;
         }
