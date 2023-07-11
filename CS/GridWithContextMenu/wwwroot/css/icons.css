@@ -10,7 +10,11 @@
 .grid-context-menu-item-ungroup-column,
 .grid-context-menu-item-clear-grouping,
 .grid-context-menu-item-show-group-panel,
+.grid-context-menu-item-hide-column,
 .grid-context-menu-item-column-chooser,
+.grid-context-menu-item-fix-column-left,
+.grid-context-menu-item-fix-column-right,
+.grid-context-menu-item-unfix-column,
 .grid-context-menu-item-clear-filter,
 .grid-context-menu-item-expand-row,
 .grid-context-menu-item-collapse-row,
@@ -33,7 +37,11 @@
 .dropdown-item:active .grid-context-menu-item-ungroup-column,
 .dropdown-item:active .grid-context-menu-item-clear-grouping,
 .dropdown-item:active .grid-context-menu-item-show-group-panel,
+.dropdown-item:active .grid-context-menu-item-hide-column,
 .dropdown-item:active .grid-context-menu-item-column-chooser,
+.dropdown-item:active .grid-context-menu-item-fix-column-left,
+.dropdown-item:active .grid-context-menu-item-fix-column-right,
+.dropdown-item:active .grid-context-menu-item-unfix-column,
 .dropdown-item:active .grid-context-menu-item-clear-filter,
 .dropdown-item:active .grid-context-menu-item-expand-row,
 .dropdown-item:active .grid-context-menu-item-collapse-row,
@@ -53,6 +61,7 @@
 .dropdown-item.disabled .grid-context-menu-item-ungroup-column,
 .dropdown-item.disabled .grid-context-menu-item-clear-grouping,
 .dropdown-item.disabled .grid-context-menu-item-show-group-panel,
+.dropdown-item.disabled .grid-context-menu-item-unfix-column,
 .dropdown-item.disabled .grid-context-menu-item-clear-filter,
 .dropdown-item.disabled .grid-context-menu-item-expand-row,
 .dropdown-item.disabled .grid-context-menu-item-collapse-row,
@@ -96,9 +105,25 @@
     mask-image: url(../images/icons/show-group-panel.svg);
     -webkit-mask-image: url(../images/icons/show-group-panel.svg);
 }
+.grid-context-menu-item-hide-column {
+    mask-image: url(../images/icons/hide-column.svg);
+    -webkit-mask-image: url(../images/icons/hide-column.svg);
+}
 .grid-context-menu-item-column-chooser {
     mask-image: url(../images/icons/column-chooser.svg);
     -webkit-mask-image: url(../images/icons/column-chooser.svg);
+}
+.grid-context-menu-item-fix-column-left {
+    mask-image: url(../images/icons/fix-column-left.svg);
+    -webkit-mask-image: url(../images/icons/fix-column-left.svg);
+}
+.grid-context-menu-item-fix-column-right {
+    mask-image: url(../images/icons/fix-column-right.svg);
+    -webkit-mask-image: url(../images/icons/fix-column-right.svg);
+}
+.grid-context-menu-item-unfix-column {
+    mask-image: url(../images/icons/unfix-column.svg);
+    -webkit-mask-image: url(../images/icons/unfix-column.svg);
 }
 .grid-context-menu-item-clear-filter {
     mask-image: url(../images/icons/clear-filter.svg);
