@@ -1,8 +1,8 @@
 namespace GridWithContextMenu.Data
 {
     public class WeatherForecastService {
-        public readonly string[] Summaries = new[] {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+        public enum Summaries {
+            Freezing, Bracing, Chilly, Cool, Mild, Warm, Balmy, Hot, Sweltering, Scorching
         };
         private List<WeatherForecast>? Forecasts;
         public Task<List<WeatherForecast>> GetForecastAsync() {
@@ -12,13 +12,10 @@ namespace GridWithContextMenu.Data
                     ID = index,
                     Date = DateTime.Today.AddDays(index),
                     TemperatureC = rnd.Next(-20, 55),
-                    Summary = Summaries[rnd.Next(Summaries.Length)]
+                    Summary = (Summaries)rnd.Next(Enum.GetNames(typeof(Summaries)).Length)
                 }).ToList();
             }
             return Task.FromResult(Forecasts);
-        }
-        public string[] GetSummaries() {
-            return Summaries;
         }
         public Task<List<WeatherForecast>> ChangeForecastAsync(WeatherForecast changed) {
             var orginalForecast = Forecasts.FirstOrDefault(i => i.ID == changed.ID);

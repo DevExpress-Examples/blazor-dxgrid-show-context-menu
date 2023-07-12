@@ -14,8 +14,6 @@ Add the **oncontextmenu:preventDefault** to disable the standard browser context
 
 The [GridContextMenuContainer](./CS/GridWithContextMenu/Pages/GridContextMenuContainer.razor) component contains Context Menu components. The [GridContextMenuHelper](./CS/GridWithContextMenu/Data/GridContextMenuHelper.cs) class implements Context Menu's item generation, manages state, and includes the click handlers that use the Blazor [Grid's API](https://docs.devexpress.com/Blazor/DevExpress.Blazor.DxGrid._methods) to execute commands.
 
-In this example, the [Column Chooser](https://docs.devexpress.com/Blazor/DevExpress.Blazor.DxGrid.ShowColumnChooser(System.String)) is displayed next to the Grid component. To replicate this capability, assign a CSS class to the Grid and use it to [arrange](./CS/GridWithContextMenu/Data/GridContextMenuHelper.cs#L85) the Column Chooser.
-
 ## Files to Review
 
 - [Index.razor](./CS/GridWithContextMenu/Pages/Index.razor)
