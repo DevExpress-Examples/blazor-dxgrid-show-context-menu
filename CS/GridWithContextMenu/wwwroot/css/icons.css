@@ -1,5 +1,14 @@
-.menu-item-selected {
-    background-color: #d5d8db;
+.menu-item-selected::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    left:0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: inherit;
+    background-color: #000;
+    opacity: 0.2;
 }
 
 .grid-context-menu-item-full-expand,
