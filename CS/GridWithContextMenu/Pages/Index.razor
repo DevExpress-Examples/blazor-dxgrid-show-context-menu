@@ -8,14 +8,37 @@
         EditMode="GridEditMode.EditRow"
         CssClass="mw-1100"
         CustomizeElement="Grid_CustomizeElement"
-        @oncontextmenu:preventDefault
         EditModelSaving="Grid_EditModelSaving"
-        DataItemDeleting="Grid_DataItemDeleting">
+        DataItemDeleting="Grid_DataItemDeleting"
+        ContextMenus="GridContextMenus.All"
+        CustomizeContextMenu="Grid_CustomizeContextMenu">
+    <ToolbarTemplate>
+        <DxToolbar ItemRenderStyleMode="ToolbarRenderStyleMode.Plain">
+            <DxToolbarItem Text="New" Click="NewItem_Click" />
+            <DxToolbarItem Text="Column Chooser" BeginGroup="true" Click="ColumnChooserItem_Click" />
+            <DxToolbarItem Text="Export">
+                <Items>
+                    <DxToolbarItem Text="To CSV" Click="ExportCsvItem_Click" />
+                    <DxToolbarItem Text="To XLSX" Click="ExportXlsxItem_Click" />
+                    <DxToolbarItem Text="To XLS" Click="ExportXlsItem_Click" />
+                    <DxToolbarItem Text="To PDF" Click="ExportPdfItem_Click" />
+                </Items>
+            </DxToolbarItem>
+            <DxToolbarItem BeginGroup="true">
+                <Template Context="toolbar_item_context">
+                    <DxSearchBox @bind-Text="GridSearchText"
+                                 BindValueMode="BindValueMode.OnInput"
+                                 ClearButtonDisplayMode="DataEditorClearButtonDisplayMode.Auto"
+                                 aria-label="Search" />
+                </Template>
+            </DxToolbarItem>
+        </DxToolbar>
+    </ToolbarTemplate>
     <Columns>
-        <DxGridDataColumn FieldName="Date" SortIndex="0" />
+        <DxGridDataColumn FieldName="Date" />
         <DxGridDataColumn FieldName="TemperatureC" />
         <DxGridDataColumn FieldName="TemperatureF" />
-        <DxGridDataColumn FieldName="Summary" />
+        <DxGridDataColumn FieldName="Summary" GroupIndex="0" />
     </Columns>
     <TotalSummary>
         <DxGridSummaryItem SummaryType="GridSummaryItemType.Avg" FieldName="TemperatureC" />
@@ -28,18 +51,47 @@
     IGrid Grid { get; set; }
     GridContextMenuContainer ContextMenuContainer { get; set; }
     object GridData { get; set; }
+    string GridSearchText = "";
+    const string ExportFileName = "ExportResult";
 
     protected override async Task OnInitializedAsync() {
         GridData = await ForecastService.GetForecastAsync();
     }
+    void Grid_CustomizeContextMenu(GridCustomizeContextMenuEventArgs args)
+    {
+        if (args.Context is GridDataRowCommandContext rowContext)
+        {
+            args.Items.AddCustomItem("New Row", async () =>
+            {
+                rowContext.Grid.BeginUpdate();
+                await rowContext.Grid.StartEditNewRowAsync();
+                rowContext.Grid.EndUpdate();
+            });
+            args.Items.AddCustomItem("Edit Row", async () =>
+            {
+                rowContext.Grid.BeginUpdate();
+                await rowContext.Grid.StartEditRowAsync(rowContext.RowVisibleIndex);
+                rowContext.Grid.EndUpdate();
+            });
+            args.Items.AddCustomItem("Delete Row", async () =>
+            {
+                rowContext.Grid.BeginUpdate();
+                rowContext.Grid.ShowRowDeleteConfirmation(rowContext.RowVisibleIndex);
+                rowContext.Grid.EndUpdate();
+            });
+            args.Items.Add(GridContextMenuDefaultItemNames.ExpandAll);
+            args.Items.Add(GridContextMenuDefaultItemNames.CollapseAll);
+        }
+    }
+
 
     void Grid_CustomizeElement(GridCustomizeElementEventArgs e) {
-        if(GridContextMenuHelper.IsContextMenuElement(e.ElementType)) {
-        	e.Attributes["oncontextmenu"] = EventCallback.Factory.Create<MouseEventArgs>(
-         		this,
-        		async mArgs => await ContextMenuContainer.Grid_ContextMenu(e, mArgs)
-        	);
-        }
+        // if(GridContextMenuHelper.IsContextMenuElement(e.ElementType)) {
+        // 	e.Attributes["oncontextmenu"] = EventCallback.Factory.Create<MouseEventArgs>(
+        //  		this,
+        // 		async mArgs => await ContextMenuContainer.Grid_ContextMenu(e, mArgs)
+        // 	);
+        // }
     }
 
     async Task Grid_EditModelSaving(GridEditModelSavingEventArgs e) {
@@ -50,5 +102,30 @@
         if (item != null) {
             await ForecastService.Remove(item);
         }
+    }
+
+    async Task NewItem_Click()
+    {
+        await Grid.StartEditNewRowAsync();
+    }
+    void ColumnChooserItem_Click(ToolbarItemClickEventArgs e)
+    {
+        Grid.ShowColumnChooser();
+    }
+    async Task ExportXlsxItem_Click()
+    {
+        await Grid.ExportToXlsxAsync(ExportFileName);
+    }
+    async Task ExportXlsItem_Click()
+    {
+        await Grid.ExportToXlsAsync(ExportFileName);
+    }
+    async Task ExportCsvItem_Click()
+    {
+        await Grid.ExportToCsvAsync(ExportFileName);
+    }
+    async Task ExportPdfItem_Click()
+    {
+        await Grid.ExportToPdfAsync(ExportFileName);
     }
 }
