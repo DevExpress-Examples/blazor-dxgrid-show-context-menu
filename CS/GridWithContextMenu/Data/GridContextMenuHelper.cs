@@ -65,7 +65,7 @@ namespace GridWithContextMenu.Data {
         }
 
         public static bool IsContextMenuElement(GridElementType elementType) {
-            return IsColumnContextMenuElement(elementType) || IsRowContextMenuElement(elementType);
+            return IsRowContextMenuElement(elementType);
         }
         public static bool IsColumnContextMenuElement(GridElementType elementType) {
             switch(elementType) {
@@ -79,8 +79,6 @@ namespace GridWithContextMenu.Data {
         }
         public static bool IsRowContextMenuElement(GridElementType elementType) {
             switch(elementType) {
-                case GridElementType.DataRow:
-                case GridElementType.GroupRow:
                 case GridElementType.EditRow:
                     return true;
             }

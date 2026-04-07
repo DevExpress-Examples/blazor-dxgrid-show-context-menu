@@ -11,7 +11,8 @@
         EditModelSaving="Grid_EditModelSaving"
         DataItemDeleting="Grid_DataItemDeleting"
         ContextMenus="GridContextMenus.All"
-        CustomizeContextMenu="Grid_CustomizeContextMenu">
+        CustomizeContextMenu="Grid_CustomizeContextMenu"
+        >
     <ToolbarTemplate>
         <DxToolbar ItemRenderStyleMode="ToolbarRenderStyleMode.Plain">
             <DxToolbarItem Text="New" Click="NewItem_Click" />
@@ -61,6 +62,21 @@
     {
         if (args.Context is GridDataRowCommandContext rowContext)
         {
+            if (rowContext.Grid.IsEditing())
+            {
+                args.Items.AddCustomItem("Save Changes", async () =>
+                {
+                    rowContext.Grid.BeginUpdate();
+                    await rowContext.Grid.SaveChangesAsync();
+                    rowContext.Grid.EndUpdate();
+                });
+                args.Items.AddCustomItem("Cancel Editing", async () =>
+                {
+                    rowContext.Grid.BeginUpdate();
+                    await rowContext.Grid.CancelEditAsync();
+                    rowContext.Grid.EndUpdate();
+                });
+            }
             args.Items.AddCustomItem("New Row", async () =>
             {
                 rowContext.Grid.BeginUpdate();
@@ -79,19 +95,17 @@
                 rowContext.Grid.ShowRowDeleteConfirmation(rowContext.RowVisibleIndex);
                 rowContext.Grid.EndUpdate();
             });
-            args.Items.Add(GridContextMenuDefaultItemNames.ExpandAll);
-            args.Items.Add(GridContextMenuDefaultItemNames.CollapseAll);
         }
     }
 
 
     void Grid_CustomizeElement(GridCustomizeElementEventArgs e) {
-        // if(GridContextMenuHelper.IsContextMenuElement(e.ElementType)) {
-        // 	e.Attributes["oncontextmenu"] = EventCallback.Factory.Create<MouseEventArgs>(
-        //  		this,
-        // 		async mArgs => await ContextMenuContainer.Grid_ContextMenu(e, mArgs)
-        // 	);
-        // }
+        if(GridContextMenuHelper.IsContextMenuElement(e.ElementType)) {
+        	e.Attributes["oncontextmenu"] = EventCallback.Factory.Create<MouseEventArgs>(
+         		this,
+        		async mArgs => await ContextMenuContainer.Grid_ContextMenu(e, mArgs)
+        	);
+        }
     }
 
     async Task Grid_EditModelSaving(GridEditModelSavingEventArgs e) {
