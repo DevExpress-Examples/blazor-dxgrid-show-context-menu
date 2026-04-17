@@ -33,18 +33,8 @@ namespace GridWithContextMenu.Data {
             return new List<ContextMenuItem> {
                 new ContextMenuItem { ItemType = GridContextMenuItemType.FullExpand, Text = "Expand All", IconCssClass="grid-context-menu-item-full-expand" },
                 new ContextMenuItem { ItemType = GridContextMenuItemType.FullCollapse, Text = "Collapse All", IconCssClass="grid-context-menu-item-full-collapse" },
-                new ContextMenuItem { ItemType = GridContextMenuItemType.SortAscending, Text = "Sort Ascending", BeginGroup = true, IconCssClass="grid-context-menu-item-sort-ascending" },
-                new ContextMenuItem { ItemType = GridContextMenuItemType.SortDescending, Text = "Sort Descending", IconCssClass="grid-context-menu-item-sort-descending" },
-                new ContextMenuItem { ItemType = GridContextMenuItemType.ClearSorting, Text = "Clear Sorting" },
-                new ContextMenuItem { ItemType = GridContextMenuItemType.GroupByColumn, Text = "Group By This Column", BeginGroup = true, IconCssClass="grid-context-menu-item-group-by-column" },
-                new ContextMenuItem { ItemType = GridContextMenuItemType.UngroupColumn, Text = "Ungroup", IconCssClass="grid-context-menu-item-ungroup-column" },
-                new ContextMenuItem { ItemType = GridContextMenuItemType.ClearGrouping, Text = "Clear Grouping", IconCssClass="grid-context-menu-item-clear-grouping" },
                 new ContextMenuItem { ItemType = GridContextMenuItemType.ShowGroupPanel, Text = "Group Panel", IconCssClass="grid-context-menu-item-show-group-panel" },
-                new ContextMenuItem { ItemType = GridContextMenuItemType.HideColumn, Text = "Hide Column", BeginGroup = true, IconCssClass="grid-context-menu-item-hide-column" },
                 new ContextMenuItem { ItemType = GridContextMenuItemType.ShowColumnChooser, Text = "Column Chooser", IconCssClass="grid-context-menu-item-column-chooser" },
-                new ContextMenuItem { ItemType = GridContextMenuItemType.FixColumnToLeft, Text = "Fix Column to the Left", BeginGroup = true, IconCssClass="grid-context-menu-item-fix-column-left" },
-                new ContextMenuItem { ItemType = GridContextMenuItemType.FixColumnToRight, Text = "Fix Column to the Right", IconCssClass="grid-context-menu-item-fix-column-right" },
-                new ContextMenuItem { ItemType = GridContextMenuItemType.Unfix, Text = "Unfix Column", IconCssClass="grid-context-menu-item-unfix-column" },
                 new ContextMenuItem { ItemType = GridContextMenuItemType.ClearFilter, Text = "Clear Filter", BeginGroup = true, IconCssClass="grid-context-menu-item-clear-filter" },
                 new ContextMenuItem { ItemType = GridContextMenuItemType.ShowFilterRow, Text = "Filter Row", IconCssClass="grid-context-menu-item-filter-row" },
                 new ContextMenuItem { ItemType = GridContextMenuItemType.ShowFooter, Text = "Footer", IconCssClass="grid-context-menu-item-footer" }
@@ -65,15 +55,13 @@ namespace GridWithContextMenu.Data {
         }
 
         public static bool IsContextMenuElement(GridElementType elementType) {
-            return IsRowContextMenuElement(elementType);
+            return IsCustomContextMenuElement(elementType) || IsRowContextMenuElement(elementType);
         }
-        public static bool IsColumnContextMenuElement(GridElementType elementType) {
+        public static bool IsCustomContextMenuElement(GridElementType elementType) {
             switch(elementType) {
-                case GridElementType.HeaderCell:
-                case GridElementType.HeaderCommandCell:
-                case GridElementType.HeaderSelectionCell:
-                case GridElementType.GroupPanelHeader:
-                    return true;
+				//case GridElementType.ToolbarContainer:
+				//case GridElementType.PagerContainer:
+				//	return true;
             }
             return false;
         }
@@ -95,30 +83,6 @@ namespace GridWithContextMenu.Data {
                 case GridContextMenuItemType.FullCollapse:
                     grid.CollapseAllGroupRows();
                     break;
-                case GridContextMenuItemType.SortAscending:
-                    if(dataColumn.SortOrder != GridColumnSortOrder.Ascending) {
-                        var newSortIndex = dataColumn.SortIndex > -1 ? dataColumn.SortIndex : grid.GetSortedColumns().Count;
-                        grid.SortBy(dataColumn.FieldName, GridColumnSortOrder.Ascending, newSortIndex);
-                    }
-                    break;
-                case GridContextMenuItemType.SortDescending:
-                    if(dataColumn.SortOrder != GridColumnSortOrder.Descending) {
-                        var newSortIndex = dataColumn.SortIndex > -1 ? dataColumn.SortIndex : grid.GetSortedColumns().Count;
-                        grid.SortBy(dataColumn.FieldName, GridColumnSortOrder.Descending, newSortIndex);
-                    }
-                    break;
-                case GridContextMenuItemType.ClearSorting:
-                    grid.SortBy(dataColumn.FieldName, GridColumnSortOrder.Descending, -1);
-                    break;
-                case GridContextMenuItemType.GroupByColumn:
-                    grid.GroupBy(dataColumn.FieldName, grid.GetGroupCount());
-                    break;
-                case GridContextMenuItemType.UngroupColumn:
-                    grid.GroupBy(dataColumn.FieldName, -1);
-                    break;
-                case GridContextMenuItemType.ClearGrouping:
-                    grid.ClearSort();
-                    break;
                 case GridContextMenuItemType.ShowGroupPanel:
                     grid.ShowGroupPanel = !grid.ShowGroupPanel;
                     break;
@@ -129,21 +93,9 @@ namespace GridWithContextMenu.Data {
                     var isFooterVisible = grid.FooterDisplayMode == GridFooterDisplayMode.Always
                         || grid.FooterDisplayMode == GridFooterDisplayMode.Auto && grid.GetTotalSummaryItems().Count > 0;
                     grid.FooterDisplayMode = isFooterVisible ? GridFooterDisplayMode.Never : GridFooterDisplayMode.Always;
-                    break;
-                case GridContextMenuItemType.HideColumn:
-                    column.Visible = false;
-                    break;               
+                    break;            
                 case GridContextMenuItemType.ShowColumnChooser:
                     grid.ShowColumnChooser();
-                    break;
-                case GridContextMenuItemType.FixColumnToLeft:
-                    column.FixedPosition = GridColumnFixedPosition.Left;
-                    break;
-                case GridContextMenuItemType.FixColumnToRight:
-                    column.FixedPosition = GridColumnFixedPosition.Right;
-                    break;
-                case GridContextMenuItemType.Unfix:
-                    column.FixedPosition = GridColumnFixedPosition.None;
                     break;
                 case GridContextMenuItemType.ClearFilter:
                     grid.ClearFilter();

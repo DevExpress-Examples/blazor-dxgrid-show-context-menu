@@ -12,7 +12,7 @@
         DataItemDeleting="Grid_DataItemDeleting"
         ContextMenus="GridContextMenus.All"
         CustomizeContextMenu="Grid_CustomizeContextMenu"
-        >
+        @oncontextmenu:preventDefault>
     <ToolbarTemplate>
         <DxToolbar ItemRenderStyleMode="ToolbarRenderStyleMode.Plain">
             <DxToolbarItem Text="New" Click="NewItem_Click" />
@@ -58,42 +58,78 @@
     protected override async Task OnInitializedAsync() {
         GridData = await ForecastService.GetForecastAsync();
     }
-    void Grid_CustomizeContextMenu(GridCustomizeContextMenuEventArgs args)
-    {
-        if (args.Context is GridDataRowCommandContext rowContext)
-        {
-            if (rowContext.Grid.IsEditing())
-            {
-                args.Items.AddCustomItem("Save Changes", async () =>
-                {
+    void Grid_CustomizeContextMenu(GridCustomizeContextMenuEventArgs args) {
+        if (args.Context is GridDataRowCommandContext rowContext) {
+            if (rowContext.Grid.IsEditing()) {
+                args.Items.AddCustomItem("Save", async () => {
                     rowContext.Grid.BeginUpdate();
                     await rowContext.Grid.SaveChangesAsync();
                     rowContext.Grid.EndUpdate();
                 });
-                args.Items.AddCustomItem("Cancel Editing", async () =>
-                {
+                args.Items.AddCustomItem("Cancel", async () => {
                     rowContext.Grid.BeginUpdate();
                     await rowContext.Grid.CancelEditAsync();
                     rowContext.Grid.EndUpdate();
                 });
             }
-            args.Items.AddCustomItem("New Row", async () =>
-            {
+            args.Items.AddCustomItem("New", async () => {
                 rowContext.Grid.BeginUpdate();
                 await rowContext.Grid.StartEditNewRowAsync();
                 rowContext.Grid.EndUpdate();
-            });
-            args.Items.AddCustomItem("Edit Row", async () =>
-            {
+            }).BeginGroup = true;
+            args.Items.AddCustomItem("Edit", async () => {
                 rowContext.Grid.BeginUpdate();
                 await rowContext.Grid.StartEditRowAsync(rowContext.RowVisibleIndex);
                 rowContext.Grid.EndUpdate();
             });
-            args.Items.AddCustomItem("Delete Row", async () =>
-            {
+            args.Items.AddCustomItem("Delete", async () => {
                 rowContext.Grid.BeginUpdate();
                 rowContext.Grid.ShowRowDeleteConfirmation(rowContext.RowVisibleIndex);
                 rowContext.Grid.EndUpdate();
+            });
+        }
+
+        if (args.Context is GridHeaderCommandContext headerContext) {
+            var isFilterRowVisible = headerContext.Grid.ShowFilterRow != false;
+            string filterRowItemText = isFilterRowVisible ? "Hide Filter Row" : "Show Filter Row";
+            var newFilterRowState = isFilterRowVisible ? false : true;
+            args.Items.AddCustomItem(filterRowItemText, () => {
+                headerContext.Grid.BeginUpdate();
+                headerContext.Grid.ShowFilterRow = newFilterRowState;
+                headerContext.Grid.EndUpdate();
+            });
+
+            var isFiltered = headerContext.Grid.GetFilterCriteria() != null;
+            args.Items.AddCustomItem("Clear Filter", () => {
+                headerContext.Grid.BeginUpdate();
+                headerContext.Grid.ClearFilter();
+                headerContext.Grid.EndUpdate();
+            }).Enabled = isFiltered ? true : false;
+
+            args.Items.AddCustomItem("Fix Column to the Left", () => {
+                headerContext.Grid.BeginUpdate();
+                headerContext.Column.FixedPosition = GridColumnFixedPosition.Left;
+                headerContext.Grid.EndUpdate();
+            }).BeginGroup = true;
+            args.Items.AddCustomItem("Fix Column to the Right", () => {
+                headerContext.Grid.BeginUpdate();
+                headerContext.Column.FixedPosition = GridColumnFixedPosition.Right;
+                headerContext.Grid.EndUpdate();
+            });
+            args.Items.AddCustomItem("Unfix Column", () => {
+                headerContext.Grid.BeginUpdate();
+                headerContext.Column.FixedPosition = GridColumnFixedPosition.None;
+                headerContext.Grid.EndUpdate();
+            });
+
+            var isFooterVisible = headerContext.Grid.FooterDisplayMode == GridFooterDisplayMode.Always
+                        || headerContext.Grid.FooterDisplayMode == GridFooterDisplayMode.Auto && headerContext.Grid.GetTotalSummaryItems().Count > 0;
+            string footerItemText = isFooterVisible ? "Hide Footer" : "Show Footer";
+            var newFooterState = isFooterVisible ? GridFooterDisplayMode.Never : GridFooterDisplayMode.Always;
+            args.Items.AddCustomItem(footerItemText, () => {
+                headerContext.Grid.BeginUpdate();
+                headerContext.Grid.FooterDisplayMode = newFooterState;
+                headerContext.Grid.EndUpdate();
             });
         }
     }
@@ -118,28 +154,22 @@
         }
     }
 
-    async Task NewItem_Click()
-    {
+    async Task NewItem_Click() {
         await Grid.StartEditNewRowAsync();
     }
-    void ColumnChooserItem_Click(ToolbarItemClickEventArgs e)
-    {
+    void ColumnChooserItem_Click(ToolbarItemClickEventArgs e) {
         Grid.ShowColumnChooser();
     }
-    async Task ExportXlsxItem_Click()
-    {
+    async Task ExportXlsxItem_Click() {
         await Grid.ExportToXlsxAsync(ExportFileName);
     }
-    async Task ExportXlsItem_Click()
-    {
+    async Task ExportXlsItem_Click() {
         await Grid.ExportToXlsAsync(ExportFileName);
     }
-    async Task ExportCsvItem_Click()
-    {
+    async Task ExportCsvItem_Click() {
         await Grid.ExportToCsvAsync(ExportFileName);
     }
-    async Task ExportPdfItem_Click()
-    {
+    async Task ExportPdfItem_Click() {
         await Grid.ExportToPdfAsync(ExportFileName);
     }
 }

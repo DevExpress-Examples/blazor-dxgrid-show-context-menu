@@ -46,7 +46,7 @@
         => await GridContextMenuHelper.ProcessRowMenuItemClickAsync((ContextMenuItem)e.ItemInfo.DataItem, ContextMenuRowIndex, Grid);
     
     public async Task Grid_ContextMenu(GridCustomizeElementEventArgs e, MouseEventArgs mouseArgs) {
-    	if(GridContextMenuHelper.IsColumnContextMenuElement(e.ElementType)) {
+    	if(GridContextMenuHelper.IsCustomContextMenuElement(e.ElementType)) {
     		ContextMenuColumn = e.Column;
     		ColumnContextMenuData = GridContextMenuHelper.GetColumnItems(e);
     		await ColumnContextMenu.ShowAsync(mouseArgs);
