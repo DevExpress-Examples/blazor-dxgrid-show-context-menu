@@ -14,7 +14,7 @@ namespace GridWithContextMenu.Data {
 
         SaveUpdates, CancelUpdates,
 
-        ExportXls, ExportXlsx, ExportPdf, ExportDocx
+        ExportXls, ExportXlsx, ExportPdf, ExportCsv
     }
 
     public class ContextMenuItem {
@@ -36,8 +36,12 @@ namespace GridWithContextMenu.Data {
                 new ContextMenuItem { ItemType = GridContextMenuItemType.ShowColumnChooser, Text = "Column Chooser", IconCssClass="grid-context-menu-item-column-chooser" },
                 new ContextMenuItem { ItemType = GridContextMenuItemType.ClearFilter, Text = "Clear Filter", BeginGroup = true, IconCssClass="grid-context-menu-item-clear-filter" },
                 new ContextMenuItem { ItemType = GridContextMenuItemType.ShowFilterRow, Text = "Filter Row", IconCssClass="grid-context-menu-item-filter-row" },
-                new ContextMenuItem { ItemType = GridContextMenuItemType.ShowFooter, Text = "Footer", IconCssClass="grid-context-menu-item-footer" }
-            };
+                new ContextMenuItem { ItemType = GridContextMenuItemType.ShowFooter, Text = "Footer", IconCssClass="grid-context-menu-item-footer" },
+				new ContextMenuItem { ItemType = GridContextMenuItemType.ExportCsv, Text = "Export to CSV", BeginGroup = true, IconCssClass="grid-context-menu-item-export" },
+				new ContextMenuItem { ItemType = GridContextMenuItemType.ExportXlsx, Text = "Export to XLSX", IconCssClass="grid-context-menu-item-export" },
+				new ContextMenuItem { ItemType = GridContextMenuItemType.ExportXls, Text = "Export to XLS", IconCssClass="grid-context-menu-item-export" },
+				new ContextMenuItem { ItemType = GridContextMenuItemType.ExportPdf, Text = "Export to PDF", IconCssClass="grid-context-menu-item-export" },
+			};
         }
         static List<ContextMenuItem> CreateRowContextMenuItems() {
             return new List<ContextMenuItem> {
@@ -73,7 +77,8 @@ namespace GridWithContextMenu.Data {
         }
 
         public static void ProcessCustomMenuItemClick(ContextMenuItem item, IGrid grid) {
-            grid.BeginUpdate();
+			const string ExportFileName = "ExportResult";
+			grid.BeginUpdate();
             switch(item.ItemType) {
                 case GridContextMenuItemType.FullExpand:
                     grid.ExpandAllGroupRows();
@@ -98,7 +103,19 @@ namespace GridWithContextMenu.Data {
                 case GridContextMenuItemType.ClearFilter:
                     grid.ClearFilter();
                     break;
-            }
+                case GridContextMenuItemType.ExportCsv:
+					grid.ExportToCsvAsync(ExportFileName);
+                    break;
+				case GridContextMenuItemType.ExportXlsx:
+					grid.ExportToXlsxAsync(ExportFileName);
+					break;
+				case GridContextMenuItemType.ExportXls:
+					grid.ExportToXlsAsync(ExportFileName);
+					break;
+				case GridContextMenuItemType.ExportPdf:
+					grid.ExportToPdfAsync(ExportFileName);
+					break;
+			}
             grid.EndUpdate();
         }
         public static async Task ProcessRowMenuItemClickAsync(ContextMenuItem item, int visibleIndex, IGrid grid) {
@@ -170,6 +187,11 @@ namespace GridWithContextMenu.Data {
                 case GridContextMenuItemType.ShowColumnChooser:
                 case GridContextMenuItemType.ClearFilter:
                     return true;
+                case GridContextMenuItemType.ExportCsv:
+                case GridContextMenuItemType.ExportXlsx:
+                case GridContextMenuItemType.ExportXls:
+                case GridContextMenuItemType.ExportPdf:
+                    return e.ElementType == GridElementType.ToolbarContainer;
             }
             return false;
         }
@@ -193,7 +215,11 @@ namespace GridWithContextMenu.Data {
                 case GridContextMenuItemType.ShowFilterRow:
                 case GridContextMenuItemType.ShowFooter:
                 case GridContextMenuItemType.ShowColumnChooser:
-                    return true;
+				case GridContextMenuItemType.ExportCsv:
+				case GridContextMenuItemType.ExportXlsx:
+				case GridContextMenuItemType.ExportXls:
+				case GridContextMenuItemType.ExportPdf:
+					return true;
                 case GridContextMenuItemType.ClearFilter:
                     return e.Grid.GetFilterCriteria() != null ? true : false;
             }
