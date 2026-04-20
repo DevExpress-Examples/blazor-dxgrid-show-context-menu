@@ -61,7 +61,7 @@
     void Grid_CustomizeContextMenu(GridCustomizeContextMenuEventArgs args) {
         if (args.Context is GridDataRowCommandContext rowContext) {
             if (rowContext.Grid.IsEditing()) {
-                args.Items.AddCustomItem("Save", async () => {
+                var save = args.Items.AddCustomItem("Save", async () => {
                     rowContext.Grid.BeginUpdate();
                     await rowContext.Grid.SaveChangesAsync();
                     rowContext.Grid.EndUpdate();

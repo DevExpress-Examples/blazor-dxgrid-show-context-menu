@@ -3,9 +3,8 @@
 namespace GridWithContextMenu.Data {
     public enum GridContextMenuItemType {
         FullExpand, FullCollapse,
-        SortAscending, SortDescending, ClearSorting,
-        GroupByColumn, UngroupColumn, ClearGrouping, ShowGroupPanel,
-        HideColumn, ShowColumnChooser,
+        ShowGroupPanel,
+        ShowColumnChooser,
         ClearFilter,
         ShowFilterRow, ShowFooter,
 
@@ -13,9 +12,9 @@ namespace GridWithContextMenu.Data {
         ExpandDetailRow, CollapseDetailRow,
         NewRow, EditRow, DeleteRow,
 
-        FixColumnToRight, FixColumnToLeft, Unfix,
+        SaveUpdates, CancelUpdates,
 
-        SaveUpdates, CancelUpdates
+        ExportXls, ExportXlsx, ExportPdf, ExportDocx
     }
 
     public class ContextMenuItem {
@@ -29,7 +28,7 @@ namespace GridWithContextMenu.Data {
     }
 
     public class GridContextMenuHelper {
-        static List<ContextMenuItem> CreateColumnContextMenuItems() {
+        static List<ContextMenuItem> CreateCustomContextMenuItems() {
             return new List<ContextMenuItem> {
                 new ContextMenuItem { ItemType = GridContextMenuItemType.FullExpand, Text = "Expand All", IconCssClass="grid-context-menu-item-full-expand" },
                 new ContextMenuItem { ItemType = GridContextMenuItemType.FullCollapse, Text = "Collapse All", IconCssClass="grid-context-menu-item-full-collapse" },
@@ -59,9 +58,9 @@ namespace GridWithContextMenu.Data {
         }
         public static bool IsCustomContextMenuElement(GridElementType elementType) {
             switch(elementType) {
-				//case GridElementType.ToolbarContainer:
-				//case GridElementType.PagerContainer:
-				//	return true;
+                case GridElementType.ToolbarContainer:
+                case GridElementType.PagerContainer:
+                    return true;
             }
             return false;
         }
@@ -73,8 +72,7 @@ namespace GridWithContextMenu.Data {
             return false;
         }
 
-        public static void ProcessColumnMenuItemClick(ContextMenuItem item, IGridColumn column, IGrid grid) {
-            var dataColumn = column as IGridDataColumn;
+        public static void ProcessCustomMenuItemClick(ContextMenuItem item, IGrid grid) {
             grid.BeginUpdate();
             switch(item.ItemType) {
                 case GridContextMenuItemType.FullExpand:
@@ -134,19 +132,19 @@ namespace GridWithContextMenu.Data {
                     break;
             }
         }
-        public static List<ContextMenuItem> GetColumnItems(GridCustomizeElementEventArgs e) {
-            var items = CreateColumnContextMenuItems();
+        public static List<ContextMenuItem> GetCustomItems(GridCustomizeElementEventArgs e) {
+            var items = CreateCustomContextMenuItems();
             var applyBeginGroupForNextVisibleItem = false;
             foreach(var item in items) {
-                item.Visible = IsColumnMenuItemVisible(e, item.ItemType);
+                item.Visible = IsCustomMenuItemVisible(e, item.ItemType);
                 if(!item.Visible && item.BeginGroup)
                     applyBeginGroupForNextVisibleItem = true;
                 if(item.Visible && applyBeginGroupForNextVisibleItem) {
                     item.BeginGroup = true;
                     applyBeginGroupForNextVisibleItem = false;
                 }
-                item.Enabled = IsColumnMenuItemEnabled(e, item.ItemType);
-                var isSelected = IsColumnMenuItemSelected(e, item.ItemType);
+                item.Enabled = IsCustomMenuItemEnabled(e, item.ItemType);
+                var isSelected = IsCustomMenuItemSelected(e, item.ItemType);
                 if(item.Enabled && isSelected)
                     item.CssClass = "menu-item-selected";
             }
@@ -161,58 +159,22 @@ namespace GridWithContextMenu.Data {
             return items;
         }
 
-        static bool IsColumnMenuItemVisible(GridCustomizeElementEventArgs e, GridContextMenuItemType itemType) {
-            var dataColumn = e.Column as IGridDataColumn;
-            var allowSort = GetAllowSort(e.Column, e.Grid);
-            var allowGroup = GetAllowGroup(e.Column, e.Grid);            
+        static bool IsCustomMenuItemVisible(GridCustomizeElementEventArgs e, GridContextMenuItemType itemType) {
+            
             switch(itemType) {
                 case GridContextMenuItemType.FullExpand:
-                case GridContextMenuItemType.FullCollapse:
-                    return e.ElementType == GridElementType.GroupPanelHeader;
-                case GridContextMenuItemType.SortAscending:
-                case GridContextMenuItemType.SortDescending:
-                    return allowSort;
-                case GridContextMenuItemType.ClearSorting:
-                    return allowSort && dataColumn.GroupIndex < 0;
-                case GridContextMenuItemType.GroupByColumn:
-                    return allowGroup && dataColumn.GroupIndex < 0;
-                case GridContextMenuItemType.UngroupColumn:
-                    return allowGroup && dataColumn.GroupIndex > -1;
-                case GridContextMenuItemType.ClearGrouping:
-                    return e.Grid.AllowGroup;               
+                case GridContextMenuItemType.FullCollapse:     
                 case GridContextMenuItemType.ShowGroupPanel:
                 case GridContextMenuItemType.ShowFilterRow:
                 case GridContextMenuItemType.ShowFooter:
-                case GridContextMenuItemType.HideColumn:
                 case GridContextMenuItemType.ShowColumnChooser:
-                case GridContextMenuItemType.FixColumnToLeft:
-                case GridContextMenuItemType.FixColumnToRight:
-                case GridContextMenuItemType.Unfix:
                 case GridContextMenuItemType.ClearFilter:
                     return true;
             }
             return false;
         }
-        static bool IsColumnMenuItemSelected(GridCustomizeElementEventArgs e, GridContextMenuItemType itemType) {
-            var dataColumn = e.Column as IGridDataColumn;
-            var isSorted = dataColumn != null && dataColumn.SortIndex > -1;
-            var isGrouped = dataColumn != null && dataColumn.GroupIndex > -1;
-            var sortOrder = GridColumnSortOrder.None;
-            var fixedPosition = dataColumn.FixedPosition;
-            if (isSorted || isGrouped) {
-                sortOrder = dataColumn.SortOrder;
-                if (sortOrder == GridColumnSortOrder.None)
-                    sortOrder = GridColumnSortOrder.Ascending;
-            }
+        static bool IsCustomMenuItemSelected(GridCustomizeElementEventArgs e, GridContextMenuItemType itemType) {
             switch(itemType) {
-                case GridContextMenuItemType.SortAscending:
-                    return sortOrder == GridColumnSortOrder.Ascending;
-                case GridContextMenuItemType.SortDescending:
-                    return sortOrder == GridColumnSortOrder.Descending;
-                case GridContextMenuItemType.FixColumnToLeft:
-                    return fixedPosition == GridColumnFixedPosition.Left;
-                case GridContextMenuItemType.FixColumnToRight:
-                    return fixedPosition == GridColumnFixedPosition.Right;
                 case GridContextMenuItemType.ShowGroupPanel:
                     return e.Grid.ShowGroupPanel;
                 case GridContextMenuItemType.ShowFilterRow:
@@ -223,33 +185,17 @@ namespace GridWithContextMenu.Data {
             }
             return false;
         }
-        static bool IsColumnMenuItemEnabled(GridCustomizeElementEventArgs e, GridContextMenuItemType itemType) {
-            var dataColumn = e.Column as IGridDataColumn;
-            var allowSort = GetAllowSort(e.Column, e.Grid);
-            var allowGroup = GetAllowGroup(e.Column, e.Grid);
+        static bool IsCustomMenuItemEnabled(GridCustomizeElementEventArgs e, GridContextMenuItemType itemType) {
             switch(itemType) {
                 case GridContextMenuItemType.FullExpand:
                 case GridContextMenuItemType.FullCollapse:
-                case GridContextMenuItemType.SortAscending:
-                case GridContextMenuItemType.SortDescending:
-                case GridContextMenuItemType.GroupByColumn:
-                case GridContextMenuItemType.UngroupColumn:
                 case GridContextMenuItemType.ShowGroupPanel:
                 case GridContextMenuItemType.ShowFilterRow:
                 case GridContextMenuItemType.ShowFooter:
-                case GridContextMenuItemType.HideColumn:
                 case GridContextMenuItemType.ShowColumnChooser:
-                case GridContextMenuItemType.FixColumnToLeft:
-                case GridContextMenuItemType.FixColumnToRight:
                     return true;
-                case GridContextMenuItemType.ClearSorting:
-                    return allowSort && (dataColumn.SortIndex > -1 || dataColumn.GroupIndex > -1);
-                case GridContextMenuItemType.ClearGrouping:
-                    return e.Grid.AllowGroup && e.Grid.GetGroupCount() > 1;
                 case GridContextMenuItemType.ClearFilter:
-                    return e.Grid.GetDataColumns().Any(i => i.FilterRowValue != null);
-                case GridContextMenuItemType.Unfix:
-                    return e.Column.FixedPosition != GridColumnFixedPosition.None;
+                    return e.Grid.GetFilterCriteria() != null ? true : false;
             }
             return false;
         }
@@ -303,17 +249,6 @@ namespace GridWithContextMenu.Data {
                 case GridContextMenuItemType.CancelUpdates:
                     return e.Grid.IsEditing();
             }
-            return false;
-        }
-
-        static bool GetAllowSort(IGridColumn column, IGrid grid) {
-            if(column is IGridDataColumn dataColumn)
-                return dataColumn.AllowSort ?? grid.AllowSort;
-            return false;
-        }
-        static bool GetAllowGroup(IGridColumn column, IGrid grid) {
-            if(column is IGridDataColumn dataColumn)
-                return dataColumn.AllowGroup ?? grid.AllowGroup;
             return false;
         }
     }
