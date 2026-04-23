@@ -38,8 +38,8 @@
     	
     [Parameter] public IGrid Grid { get; set; }
     
-    void CustomContextMenu_ItemClick(ContextMenuItemClickEventArgs e)
-        => GridContextMenuHelper.ProcessCustomMenuItemClick((ContextMenuItem)e.ItemInfo.DataItem, Grid);
+    async Task CustomContextMenu_ItemClick(ContextMenuItemClickEventArgs e)
+        => await GridContextMenuHelper.ProcessCustomMenuItemClick((ContextMenuItem)e.ItemInfo.DataItem, Grid);
         
     async Task RowContextMenu_ItemClick(ContextMenuItemClickEventArgs e)
         => await GridContextMenuHelper.ProcessRowMenuItemClickAsync((ContextMenuItem)e.ItemInfo.DataItem, ContextMenuRowIndex, Grid);

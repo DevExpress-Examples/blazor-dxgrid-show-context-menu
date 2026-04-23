@@ -30,7 +30,8 @@ namespace GridWithContextMenu.Data {
     public class GridContextMenuHelper {
         static List<ContextMenuItem> CreateCustomContextMenuItems() {
             return new List<ContextMenuItem> {
-                new ContextMenuItem { ItemType = GridContextMenuItemType.FullExpand, Text = "Expand All", IconCssClass="grid-context-menu-item-full-expand" },
+				new ContextMenuItem { ItemType = GridContextMenuItemType.NewRow, Text = "New", BeginGroup = true, IconCssClass="grid-context-menu-item-new-row" },
+				new ContextMenuItem { ItemType = GridContextMenuItemType.FullExpand, Text = "Expand All", IconCssClass="grid-context-menu-item-full-expand" },
                 new ContextMenuItem { ItemType = GridContextMenuItemType.FullCollapse, Text = "Collapse All", IconCssClass="grid-context-menu-item-full-collapse" },
                 new ContextMenuItem { ItemType = GridContextMenuItemType.ShowGroupPanel, Text = "Group Panel", IconCssClass="grid-context-menu-item-show-group-panel" },
                 new ContextMenuItem { ItemType = GridContextMenuItemType.ShowColumnChooser, Text = "Column Chooser", IconCssClass="grid-context-menu-item-column-chooser" },
@@ -76,11 +77,14 @@ namespace GridWithContextMenu.Data {
             return false;
         }
 
-        public static void ProcessCustomMenuItemClick(ContextMenuItem item, IGrid grid) {
+        public static async Task ProcessCustomMenuItemClick(ContextMenuItem item, IGrid grid) {
 			const string ExportFileName = "ExportResult";
 			grid.BeginUpdate();
             switch(item.ItemType) {
-                case GridContextMenuItemType.FullExpand:
+                case GridContextMenuItemType.NewRow:
+					await grid.StartEditNewRowAsync();
+                    break;
+				case GridContextMenuItemType.FullExpand:
                     grid.ExpandAllGroupRows();
                     break;
                 case GridContextMenuItemType.FullCollapse:
@@ -104,16 +108,16 @@ namespace GridWithContextMenu.Data {
                     grid.ClearFilter();
                     break;
                 case GridContextMenuItemType.ExportCsv:
-					grid.ExportToCsvAsync(ExportFileName);
+					await grid.ExportToCsvAsync(ExportFileName);
                     break;
 				case GridContextMenuItemType.ExportXlsx:
-					grid.ExportToXlsxAsync(ExportFileName);
+					await grid.ExportToXlsxAsync(ExportFileName);
 					break;
 				case GridContextMenuItemType.ExportXls:
-					grid.ExportToXlsAsync(ExportFileName);
+					await grid.ExportToXlsAsync(ExportFileName);
 					break;
 				case GridContextMenuItemType.ExportPdf:
-					grid.ExportToPdfAsync(ExportFileName);
+					await grid.ExportToPdfAsync(ExportFileName);
 					break;
 			}
             grid.EndUpdate();
@@ -187,6 +191,7 @@ namespace GridWithContextMenu.Data {
                 case GridContextMenuItemType.ShowColumnChooser:
                 case GridContextMenuItemType.ClearFilter:
                     return true;
+                case GridContextMenuItemType.NewRow:
                 case GridContextMenuItemType.ExportCsv:
                 case GridContextMenuItemType.ExportXlsx:
                 case GridContextMenuItemType.ExportXls:
@@ -209,6 +214,7 @@ namespace GridWithContextMenu.Data {
         }
         static bool IsCustomMenuItemEnabled(GridCustomizeElementEventArgs e, GridContextMenuItemType itemType) {
             switch(itemType) {
+                case GridContextMenuItemType.NewRow:
                 case GridContextMenuItemType.FullExpand:
                 case GridContextMenuItemType.FullCollapse:
                 case GridContextMenuItemType.ShowGroupPanel:
