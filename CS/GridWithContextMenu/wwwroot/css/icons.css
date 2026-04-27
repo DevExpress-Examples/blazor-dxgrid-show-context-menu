@@ -170,8 +170,8 @@
     -webkit-mask-image: url(../images/icons/delete-row.svg);
 }
 .grid-context-menu-item-export {
-    mask-image: url(../images/icons/export.svg);
-    -webkit-mask-image: url(../images/icons/export.svg);
+    mask-image: url(../images/icons/export-grid.svg);
+    -webkit-mask-image: url(../images/icons/export-grid.svg);
 }
 
 
