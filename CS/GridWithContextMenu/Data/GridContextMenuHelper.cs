@@ -283,5 +283,114 @@ namespace GridWithContextMenu.Data {
             }
             return false;
         }
+
+        public static void CustomizeContextMenu(GridCustomizeContextMenuEventArgs args) {
+			if (args.Context is GridDataRowCommandContext rowContext) AddRowItems(args, rowContext);
+
+			if (args.Context is GridHeaderCommandContext headerContext) AddHeaderItems(args, headerContext);
+
+			if (args.Context is GridFooterCommandContext footerContext) AddFooterItems(args, footerContext);
+		}
+
+        private static void AddRowItems(GridCustomizeContextMenuEventArgs args, GridDataRowCommandContext rowContext) {
+			var update = (IGridCommandContext c, Action t) => {
+				c.Grid.BeginUpdate();
+				t();
+				c.Grid.EndUpdate();
+			};
+			var updateAsync = async (IGridCommandContext c, Task t) => {
+				c.Grid.BeginUpdate();
+				await t;
+				c.Grid.EndUpdate();
+			};
+
+			if (rowContext.Grid.IsEditing()) {
+				var saveEdit = args.Items.AddCustomItem("Save", async () =>
+				    await updateAsync(rowContext, rowContext.Grid.SaveChangesAsync()));
+				saveEdit.IconCssClass = "grid-context-menu-item-edit-row";
+
+				var cancelEdit = args.Items.AddCustomItem("Cancel", async () =>
+					await updateAsync(rowContext, rowContext.Grid.CancelEditAsync()));
+				cancelEdit.IconCssClass = "grid-context-menu-item-delete-row";
+			}
+            var newRow = args.Items.AddCustomItem("New", async () =>
+                await updateAsync(rowContext, rowContext.Grid.StartEditNewRowAsync()));
+			newRow.IconCssClass = "grid-context-menu-item-new-row";
+			newRow.BeginGroup = true;
+
+            var editRow = args.Items.AddCustomItem("Edit", async () =>
+                await updateAsync(rowContext, rowContext.Grid.StartEditRowAsync(rowContext.RowVisibleIndex)));
+			editRow.IconCssClass = "grid-context-menu-item-edit-row";
+
+			var deleteRow = args.Items.AddCustomItem("Delete", () => 
+                update(rowContext, () => rowContext.Grid.ShowRowDeleteConfirmation(rowContext.RowVisibleIndex)));
+			deleteRow.IconCssClass = "grid-context-menu-item-delete-row";
+		}
+        private static void AddHeaderItems(GridCustomizeContextMenuEventArgs args, GridHeaderCommandContext headerContext) {
+			var update = (IGridCommandContext c, Action t) => {
+				c.Grid.BeginUpdate();
+				t();
+				c.Grid.EndUpdate();
+			};
+			var updateAsync = async (IGridCommandContext c, Task t) => {
+				c.Grid.BeginUpdate();
+				await t;
+				c.Grid.EndUpdate();
+			};
+
+			var isFilterRowVisible = headerContext.Grid.ShowFilterRow != false;
+			var newFilterRowState = isFilterRowVisible ? false : true;
+            var filterRow = args.Items.AddCustomItem("Filter Row", () =>
+                update(headerContext, () => headerContext.Grid.ShowFilterRow = newFilterRowState));
+			filterRow.IconCssClass = "grid-context-menu-item-filter-row";
+			filterRow.CssClass = isFilterRowVisible ? "menu-item-selected" : "";
+
+			var isFiltered = headerContext.Grid.GetFilterCriteria() != null;
+            var clearFilter = args.Items.AddCustomItem("Clear Filter", () =>
+                update(headerContext, () => headerContext.Grid.ClearFilter()));
+			clearFilter.IconCssClass = "grid-context-menu-item-clear-filter";
+			clearFilter.Enabled = isFiltered ? true : false;
+
+			var isFooterVisible = headerContext.Grid.FooterDisplayMode == GridFooterDisplayMode.Always
+						|| headerContext.Grid.FooterDisplayMode == GridFooterDisplayMode.Auto && headerContext.Grid.GetTotalSummaryItems().Count > 0;
+			var newFooterState = isFooterVisible ? GridFooterDisplayMode.Never : GridFooterDisplayMode.Always;
+            var footer = args.Items.AddCustomItem("Footer", () =>
+                update(headerContext, () => headerContext.Grid.FooterDisplayMode = newFooterState));
+			footer.IconCssClass = "grid-context-menu-item-footer";
+			footer.CssClass = isFooterVisible ? "menu-item-selected" : "";
+
+            var fixLeft = args.Items.AddCustomItem("Fix Column to the Left", () =>
+                update(headerContext, () => headerContext.Column.FixedPosition = GridColumnFixedPosition.Left));
+			fixLeft.IconCssClass = "grid-context-menu-item-fix-column-left";
+			fixLeft.BeginGroup = true;
+
+            var fixRight = args.Items.AddCustomItem("Fix Column to the Right", () =>
+                update(headerContext, () => headerContext.Column.FixedPosition = GridColumnFixedPosition.Right));
+			fixRight.IconCssClass = "grid-context-menu-item-fix-column-right";
+
+            var unfix = args.Items.AddCustomItem("Unfix Column", () =>
+                update(headerContext, () => headerContext.Column.FixedPosition = GridColumnFixedPosition.None));
+			unfix.IconCssClass = "grid-context-menu-item-unfix-column";
+		}
+        private static void AddFooterItems(GridCustomizeContextMenuEventArgs args, GridFooterCommandContext footerContext) {
+			var update = (IGridCommandContext c, Action t) => {
+				c.Grid.BeginUpdate();
+				t();
+				c.Grid.EndUpdate();
+			};
+			var updateAsync = async (IGridCommandContext c, Task t) => {
+				c.Grid.BeginUpdate();
+				await t;
+				c.Grid.EndUpdate();
+			};
+
+			var isFooterVisible = footerContext.Grid.FooterDisplayMode == GridFooterDisplayMode.Always
+						|| footerContext.Grid.FooterDisplayMode == GridFooterDisplayMode.Auto && footerContext.Grid.GetTotalSummaryItems().Count > 0;
+			var newFooterState = isFooterVisible ? GridFooterDisplayMode.Never : GridFooterDisplayMode.Always;
+            var footer = args.Items.AddCustomItem("Footer", () =>
+                update(footerContext, () => footerContext.Grid.FooterDisplayMode = newFooterState));
+			footer.IconCssClass = "grid-context-menu-item-footer";
+			footer.CssClass = isFooterVisible ? "menu-item-selected" : "";
+		}
     }
 }
