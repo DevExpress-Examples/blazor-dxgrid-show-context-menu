@@ -31,8 +31,7 @@
 .grid-context-menu-item-collapse-detail-row,
 .grid-context-menu-item-new-row,
 .grid-context-menu-item-edit-row,
-.grid-context-menu-item-delete-row,
-.grid-context-menu-item-export {
+.grid-context-menu-item-delete-row {
     width: 16px;
     height: 16px;
     background-repeat: no-repeat;
@@ -59,8 +58,7 @@
 .dropdown-item:active .grid-context-menu-item-collapse-detail-row,
 .dropdown-item:active .grid-context-menu-item-new-row,
 .dropdown-item:active .grid-context-menu-item-edit-row,
-.dropdown-item:active .grid-context-menu-item-delete-row,
-.dropdown-item:active .grid-context-menu-item-export {
+.dropdown-item:active .grid-context-menu-item-delete-row {
     background-color: white;
 }
 
@@ -80,8 +78,7 @@
 .dropdown-item.disabled .grid-context-menu-item-collapse-detail-row,
 .dropdown-item.disabled .grid-context-menu-item-new-row,
 .dropdown-item.disabled .grid-context-menu-item-edit-row,
-.dropdown-item.disabled .grid-context-menu-item-delete-row,
-.dropdown-item.disabled .grid-context-menu-item-export {
+.dropdown-item.disabled .grid-context-menu-item-delete-row {
     background-color: #c3c2c2;
 }
 
@@ -168,10 +165,6 @@
 .grid-context-menu-item-delete-row {
     mask-image: url(../images/icons/delete-row.svg);
     -webkit-mask-image: url(../images/icons/delete-row.svg);
-}
-.grid-context-menu-item-export {
-    mask-image: url(../images/icons/export-grid.svg);
-    -webkit-mask-image: url(../images/icons/export-grid.svg);
 }
 
 
