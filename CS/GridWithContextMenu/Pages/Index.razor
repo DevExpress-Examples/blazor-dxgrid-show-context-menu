@@ -6,16 +6,41 @@
 <DxGrid @ref="Grid"
         Data="GridData"
         EditMode="GridEditMode.EditRow"
+        @bind-SearchText="GridSearchText"
         CssClass="mw-1100"
         CustomizeElement="Grid_CustomizeElement"
-        @oncontextmenu:preventDefault
         EditModelSaving="Grid_EditModelSaving"
-        DataItemDeleting="Grid_DataItemDeleting">
+        DataItemDeleting="Grid_DataItemDeleting"
+        ContextMenus="GridContextMenus.All"
+        CustomizeContextMenu="Grid_CustomizeContextMenu"
+        @oncontextmenu:preventDefault>
+    <ToolbarTemplate>
+        <DxToolbar ItemRenderStyleMode="ToolbarRenderStyleMode.Plain">
+            <DxToolbarItem Text="New" Click="NewItem_Click" />
+            <DxToolbarItem Text="Column Chooser" BeginGroup="true" Click="ColumnChooserItem_Click" />
+            <DxToolbarItem Text="Export">
+                <Items>
+                    <DxToolbarItem Text="To CSV" Click="ExportCsvItem_Click" />
+                    <DxToolbarItem Text="To XLSX" Click="ExportXlsxItem_Click" />
+                    <DxToolbarItem Text="To XLS" Click="ExportXlsItem_Click" />
+                    <DxToolbarItem Text="To PDF" Click="ExportPdfItem_Click" />
+                </Items>
+            </DxToolbarItem>
+            <DxToolbarItem BeginGroup="true">
+                <Template Context="toolbar_item_context">
+                    <DxSearchBox @bind-Text="GridSearchText"
+                                 BindValueMode="BindValueMode.OnInput"
+                                 ClearButtonDisplayMode="DataEditorClearButtonDisplayMode.Auto"
+                                 aria-label="Search" />
+                </Template>
+            </DxToolbarItem>
+        </DxToolbar>
+    </ToolbarTemplate>
     <Columns>
-        <DxGridDataColumn FieldName="Date" SortIndex="0" />
+        <DxGridDataColumn FieldName="Date" />
         <DxGridDataColumn FieldName="TemperatureC" />
         <DxGridDataColumn FieldName="TemperatureF" />
-        <DxGridDataColumn FieldName="Summary" />
+        <DxGridDataColumn FieldName="Summary" GroupIndex="0" />
     </Columns>
     <TotalSummary>
         <DxGridSummaryItem SummaryType="GridSummaryItemType.Avg" FieldName="TemperatureC" />
@@ -28,10 +53,14 @@
     IGrid Grid { get; set; }
     GridContextMenuContainer ContextMenuContainer { get; set; }
     object GridData { get; set; }
+    string GridSearchText = "";
+    const string ExportFileName = "ExportResult";
 
     protected override async Task OnInitializedAsync() {
         GridData = await ForecastService.GetForecastAsync();
     }
+
+    void Grid_CustomizeContextMenu(GridCustomizeContextMenuEventArgs args) => GridContextMenuHelper.CustomizeContextMenu(args);
 
     void Grid_CustomizeElement(GridCustomizeElementEventArgs e) {
         if(GridContextMenuHelper.IsContextMenuElement(e.ElementType)) {
@@ -51,4 +80,11 @@
             await ForecastService.Remove(item);
         }
     }
+
+    async Task NewItem_Click() => await Grid.StartEditNewRowAsync();
+    void ColumnChooserItem_Click(ToolbarItemClickEventArgs e) => Grid.ShowColumnChooser();
+    async Task ExportXlsxItem_Click() => await Grid.ExportToXlsxAsync(ExportFileName);
+    async Task ExportXlsItem_Click() => await Grid.ExportToXlsAsync(ExportFileName);
+    async Task ExportCsvItem_Click() => await Grid.ExportToCsvAsync(ExportFileName);
+    async Task ExportPdfItem_Click() => await Grid.ExportToPdfAsync(ExportFileName);
 }

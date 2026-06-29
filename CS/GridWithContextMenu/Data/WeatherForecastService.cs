@@ -8,7 +8,7 @@ namespace GridWithContextMenu.Data
         public Task<List<WeatherForecast>> GetForecastAsync() {
             if (Forecasts == null) {
                 var rnd = new Random();
-                Forecasts = Enumerable.Range(1, 5).Select(index => new WeatherForecast {
+                Forecasts = Enumerable.Range(1, 25).Select(index => new WeatherForecast {
                     ID = index,
                     Date = DateTime.Today.AddDays(index),
                     TemperatureC = rnd.Next(-20, 55),
