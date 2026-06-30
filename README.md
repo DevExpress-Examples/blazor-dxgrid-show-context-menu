@@ -5,9 +5,17 @@
 [![](https://img.shields.io/badge/💬_Leave_Feedback-feecdd?style=flat-square)](#does-this-example-address-your-development-requirementsobjectives)
 <!-- default badges end -->
 
-# Blazor Grid - Display a Context Menu
+# Blazor Grid - Customize Context Menu
 
-You can display a Context Menu when you right-click any Blazor Grid element. In this example, a click on a column header or row invokes the Context Menu.
+You can display a Context Menu when you right-click any Blazor Grid element.
+
+This repository performs the following actions:
+
+|Description|Affected Area|
+|-|-|
+|Sets the [ContextMenus](https://docs.devexpress.com/Blazor/DevExpress.Blazor.DxGrid.ContextMenus) property to `All` to enable built-in context menus in DxGrid. | Header, Footer, Data Row, Group Panel, Group Row, Group Footer |
+| Customizes built-in context menus| Header, Footer, Data Rows |
+| Defines context menu for areas that built-in context menu does not support.| Toolbar, Edit Row, Pager|
 
 ![Grid with Context Menu for a column](result.png)
 
