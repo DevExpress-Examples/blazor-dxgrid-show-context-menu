@@ -28,8 +28,11 @@ Set the [ContextMenus](https://docs.devexpress.com/Blazor/DevExpress.Blazor.DxGr
 ```
 
 ### Customize Context Menu Items Using Grid APIs
+The `DxGrid` uses built-in APIs to add the following context menu items:
 
-The `DxGrid` component includes built-in APIs used to customize context menu items. This scenario affects the following Grid areas: header, footer, and data rows.
+* Save, Cancel, New, Edit, and Delete items to data rows.
+* Filter Row, Clear Filter, Footer (checkbox), Fix Column to the Left, Fix Column to the Right, and Unfix Column to the header.
+* Footer (checkbox) to the footer.
 
 In the [CustomizeContextMenu](https://docs.devexpress.com/Blazor/DevExpress.Blazor.DxGrid.CustomizeContextMenu) event handler, call the helper method defined in the [GridContextMenuHelper.cs](./CS/GridWithContextMenu/Data/GridContextMenuHelper.cs#L298-L365) class to customize built-in context menu items.
 
