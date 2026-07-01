@@ -7,7 +7,7 @@
 
 # Blazor Grid - Customize Context Menu
 
-This repository displays and customizes context menus for various DxGrid areas, customizes their items using DxGrid's built-in APIs, and defines context menus for areas that do not include built-in context menus.
+This repository displays for various DxGrid areas, customizes their items using DxGrid's built-in APIs, and defines context menus for areas that do not include built-in context menus.
 
 ![Grid with Context Menu for a column](result.png)
 
