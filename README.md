@@ -7,27 +7,52 @@
 
 # Blazor Grid - Customize Context Menu
 
-You can display a Context Menu when you right-click any Blazor Grid element.
-
-This repository performs the following actions:
-
-|Description|Affected Area|
-|-|-|
-|Sets the [ContextMenus](https://docs.devexpress.com/Blazor/DevExpress.Blazor.DxGrid.ContextMenus) property to `All` to enable built-in context menus in DxGrid. | Header, Footer, Data Row, Group Panel, Group Row, Group Footer |
-| Customizes built-in context menus| Header, Footer, Data Rows |
-| Defines context menu for areas that built-in context menu does not support.| Toolbar, Edit Row, Pager|
+This repository displays and customizes context menus for various DxGrid areas, customizes their items using DxGrid's built-in APIs, and defines context menus for areas that do not include built-in context menus.
 
 ![Grid with Context Menu for a column](result.png)
 
-Add the **oncontextmenu:preventDefault** to disable the standard browser context menu. In the Grid's [CustomizeElement](https://docs.devexpress.com/Blazor/DevExpress.Blazor.DxGrid.CustomizeElement) event handler, subscribe to the **contextmenu** event (displays the custom Context Menu).
+## Implementation Details
 
-The [GridContextMenuContainer](./CS/GridWithContextMenu/Pages/GridContextMenuContainer.razor) component contains Context Menu components. The [GridContextMenuHelper](./CS/GridWithContextMenu/Data/GridContextMenuHelper.cs) class implements Context Menu's item generation, manages state, and includes the click handlers that use the Blazor [Grid's API](https://docs.devexpress.com/Blazor/DevExpress.Blazor.DxGrid._methods) to execute commands.
+### Display Context Menus for All Built-in Areas
 
+Set the [ContextMenus](https://docs.devexpress.com/Blazor/DevExpress.Blazor.DxGrid.ContextMenus) property to `All` to enable DxGrid built-in context menus for the following areas: Header, Footer, Data Row, Group Panel, Group Row, and Group Footer.
+
+File to Review: [Index.razor](./CS/GridWithContextMenu/Pages/Index.razor#L14)
+
+### Customize Context Menu Items Using Grid's Built-in API
+
+DxGrid Component includes built-in APIs to customize context menu items. Follow the steps below to implement them:
+
+1. Add the [oncontextmenu:preventDefault](./CS/GridWithContextMenu/Pages/Index.razor#L14) to disable the standard browser context menu.
+2. In the Grid's [CustomizeContextMenu](https://docs.devexpress.com/Blazor/DevExpress.Blazor.DxGrid.CustomizeContextMenu) event handler, subscribe to the **contextmenu** event to display the custom context menu items.
+
+This scenario affects the following DxGrid areas: Header, Footer, and Data Rows.
+
+Files to Review:
+* [Index.razor](./CS/GridWithContextMenu/Pages/Index.razor#L64)
+* [GridContextMenuHelper.cs](./CS/GridWithContextMenu/Data/GridContextMenuHelper.cs#L298-L365)
+
+### Add Custom Context Menus
+
+The [GridContextMenuContainer](./CS/GridWithContextMenu/Pages/GridContextMenuContainer.razor) component contains Context Menu components. The [GridContextMenuHelper](./CS/GridWithContextMenu/Data/GridContextMenuHelper.cs) class implements Context Menu's item generation, manages state, and includes the click handlers that use the Blazor [Grid's API](https://docs.devexpress.com/Blazor/DevExpress.Blazor.DxGrid._methods) to execute commands. Follow the steps below to display custom context menus:
+
+1. Add the [oncontextmenu:preventDefault](./CS/GridWithContextMenu/Pages/Index.razor#L14) to disable the standard browser context menu.
+2. In the Grid's [CustomizeElement](https://docs.devexpress.com/Blazor/DevExpress.Blazor.DxGrid.CustomizeElement) event handler, subscribe to the **contextmenu** event to display the custom Context Menu.
+
+This scenario affects the following application areas: Toolbar Component, DxGrid's Edit Row, and DxGrid's Pager.
+
+
+Files to Review:
+* [Index.razor](./CS/GridWithContextMenu/Pages/Index.razor#L66)
+* [GridContextMenuContainer.razor](./CS/GridWithContextMenu/Pages/GridContextMenuContainer.razor#L4-L28)
+* [GridContextMenuHelper.cs](./CS/GridWithContextMenu/Data/GridContextMenuHelper.cs#L31-59)
+
+<!--
 ## Files to Review
 
 - [Index.razor](./CS/GridWithContextMenu/Pages/Index.razor)
 - [GridContextMenuHelper.cs](./CS/GridWithContextMenu/Data/GridContextMenuHelper.cs)
-- [GridContextMenuContainer.razor](./CS/GridWithContextMenu/Pages/GridContextMenuContainer.razor)
+- [GridContextMenuContainer.razor](./CS/GridWithContextMenu/Pages/GridContextMenuContainer.razor) -->
 
 ## Documentation
 
