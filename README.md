@@ -7,7 +7,7 @@
 
 # Blazor Grid - Customize Context Menu
 
-This example shows how to enable, customize, and implement context menus in Blazor Grid and Toolbar components. It demonstrates the following tasks:
+This example enables, customizes, and implements context menus in Blazor Grid and Toolbar components. It demonstrates the following tasks:
 * Enable built-in context menus for DxGrid's predefined areas: header, footer, data row, group panel, group row, and group footer.
 * Customize context menu items for header, footer, and data rows using DxGrid APIs.
 * Define custom context menus for areas that do not include built-in context menus.
