@@ -4,13 +4,13 @@
 [![](https://img.shields.io/badge/📖_How_to_use_DevExpress_Examples-e9f6fc?style=flat-square)](https://docs.devexpress.com/GeneralInformation/403183)
 [![](https://img.shields.io/badge/💬_Leave_Feedback-feecdd?style=flat-square)](#does-this-example-address-your-development-requirementsobjectives)
 <!-- default badges end -->
-
 # Blazor Grid - Customize Context Menu
 
-This example enables, customizes, and implements context menus in Blazor Grid and Toolbar components. It demonstrates the following tasks:
-* Enables built-in context menus for predefined Grid areas: header, footer, data row, group panel, group row, and group footer.
+This example enables and customizes context menus within both the DevExpress Blazor Grid and Toolbar component. It illustrates use of the following capabilities:
+
+* Activates built-in context menus for predefined Grid regions including: header, footer, data row, group panel, group row, and group footer.
 * Customizes context menu items for header, footer, and data rows using Grid APIs.
-* Defines custom context menus for areas that do not include built-in context menus.
+* Defines custom context menus for regions that do not include built-in context menus.
 
 ![Grid with Context Menu for a column](result.png)
 
@@ -18,7 +18,7 @@ This example enables, customizes, and implements context menus in Blazor Grid an
 
 ### Enable Context Menus for All Predefined Areas
 
-Set the [ContextMenus](https://docs.devexpress.com/Blazor/DevExpress.Blazor.DxGrid.ContextMenus) property to `All` to allow users to use built-in context menus in the following Grid areas: header, footer, data row, group panel, group row, and group footer.
+Set the [ContextMenus](https://docs.devexpress.com/Blazor/DevExpress.Blazor.DxGrid.ContextMenus) property to `All` to activate use of built-in context menus in the following Grid regions: header, footer, data row, group panel, group row, and group footer.
 
 ```
 <DxGrid @ref="Grid"
@@ -28,7 +28,8 @@ Set the [ContextMenus](https://docs.devexpress.com/Blazor/DevExpress.Blazor.DxGr
 ```
 
 ### Customize Context Menu Items Using Grid APIs
-The `DxGrid` uses built-in APIs to add the following context menu items:
+
+`DxGrid` uses built-in APIs to add the following context menu items:
 
 * Save, Cancel, New, Edit, and Delete items to data rows.
 * Filter Row, Clear Filter, Footer (checkbox), Fix Column to the Left, Fix Column to the Right, and Unfix Column to the header.
@@ -60,6 +61,7 @@ To display custom context menus for the toolbar component, Grid's edit row and p
 3. Add the [oncontextmenu:preventDefault](./CS/GridWithContextMenu/Pages/Index.razor#L14) directive to disable the standard browser context menu.
 4. In the [CustomizeElement](https://docs.devexpress.com/Blazor/DevExpress.Blazor.DxGrid.CustomizeElement) event handler, subscribe to the **contextmenu** event to display a custom context menu.
 
+
 ```
 <DxGrid @ref="Grid"
         ...
@@ -77,10 +79,10 @@ To display custom context menus for the toolbar component, Grid's edit row and p
 
     void Grid_CustomizeElement(GridCustomizeElementEventArgs e) {
         if(GridContextMenuHelper.IsContextMenuElement(e.ElementType)) {
-        	e.Attributes["oncontextmenu"] = EventCallback.Factory.Create<MouseEventArgs>(
-         		this,
-        		async mArgs => await ContextMenuContainer.Grid_ContextMenu(e, mArgs)
-        	);
+            e.Attributes["oncontextmenu"] = EventCallback.Factory.Create<MouseEventArgs>(
+                this,
+                async mArgs => await ContextMenuContainer.Grid_ContextMenu(e, mArgs)
+            );
         }
     }
 }
