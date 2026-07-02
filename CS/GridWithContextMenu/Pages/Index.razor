@@ -13,7 +13,8 @@
         DataItemDeleting="Grid_DataItemDeleting"
         ContextMenus="GridContextMenus.All"
         CustomizeContextMenu="Grid_CustomizeContextMenu"
-        @oncontextmenu:preventDefault>
+        @oncontextmenu:preventDefault
+        ShowGroupPanel="true">
     <ToolbarTemplate>
         <DxToolbar ItemRenderStyleMode="ToolbarRenderStyleMode.Plain">
             <DxToolbarItem Text="New" Click="NewItem_Click" />
